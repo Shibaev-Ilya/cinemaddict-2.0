@@ -3,7 +3,7 @@ import {getRandomInteger} from '../utils.js';
 const getId = () => {
   let i = 0;
   return () => i++;
-}
+};
 const id = getId();
 
 const srcPosters = [
@@ -15,11 +15,11 @@ const srcPosters = [
 ];
 
 const getComments = () => {
-  let randomNumbers = Array.from({ length: getRandomInteger(0, 8)}, () => String(getRandomInteger(500, 520)));
-  let uniqueNumbers = new Set(randomNumbers);
+  const randomNumbers = Array.from({ length: getRandomInteger(0, 8)}, () => String(getRandomInteger(500, 520)));
+  const uniqueNumbers = new Set(randomNumbers);
 
   return Array.from(uniqueNumbers);
-}
+};
 
 const getStatus = () => Boolean(getRandomInteger(0, 1));
 
@@ -27,7 +27,7 @@ const generateMovie = () => ({
   id: `${id()}`,
   filmInfo: {
     title: 'Terminator',
-    alternative_title: 'Country Who Stole Us',
+    alternativeTitle: 'Country Who Stole Us',
     totalRating: 7.8,
     poster: `images/posters/${srcPosters[getRandomInteger(0, srcPosters.length - 1)]}.png`,
     ageRating: getRandomInteger(0, 18),
@@ -44,7 +44,7 @@ const generateMovie = () => ({
     ],
     release: {
       date: '2018-12-23T03:55:18.062Z',
-      release_country: 'Spain'
+      releaseCountry: 'Spain'
     },
     runtime: getRandomInteger(63, 130),
     genre: [
@@ -64,4 +64,4 @@ const generateMovie = () => ({
   comments: getComments()
 });
 
-export {generateMovie}
+export {generateMovie};

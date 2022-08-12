@@ -2,17 +2,16 @@ import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
 
 const createFilmCardTemplate = (movie) => {
-  console.log(movie);
   const {id, filmInfo, userDetails, comments} = movie;
   const genres = filmInfo.genre;
   const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
   const getMaxDescription = (text) => {
-    if (text.length < 140) return text;
+    if (text.length < 140) {return text;}
 
-    return text.substring(0, 140) + '...';
+    return `${text.substring(0, 140) }...`;
   };
   const minutesToHours = (totalMinutes) => {
-    if (Number(totalMinutes) < 60 ) return `${totalMinutes}m`;
+    if (Number(totalMinutes) < 60 ) {return `${totalMinutes}m`;}
 
     const minutes = totalMinutes % 60;
     const hours = Math.floor(totalMinutes / 60);
@@ -43,7 +42,7 @@ const createFilmCardTemplate = (movie) => {
     <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${getActiveClass(userDetails.alreadyWatched)}" type="button">Mark as watched</button>
     <button class="film-card__controls-item film-card__controls-item--favorite ${getActiveClass(userDetails.favorite)}" type="button">Mark as favorite</button>
   </div>
-</article>`)
+</article>`);
 };
 
 export default class FilmCardView {

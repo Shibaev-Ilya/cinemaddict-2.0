@@ -25,4 +25,4 @@ render(sortView, mainContainer);
 
 filmsListPresenter.init(movieModel);
 
-//popupPresenter.init();
+popupPresenter.init();
