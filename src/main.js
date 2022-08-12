@@ -4,10 +4,12 @@ import SortView from './view/sort-view.js';
 import ProfileView from './view/profile-view.js';
 import FilmsListPresenter from './presenter/films-list-presenter.js';
 import PopupPresenter from './presenter/popup-presenter';
+import MovieModel from './model/movies-model.js';
 
 const mainContainer = document.querySelector('.main');
-
 const headerContainer = document.querySelector('.header');
+
+const movieModel = new MovieModel;
 
 const filmsListPresenter = new FilmsListPresenter(mainContainer);
 const popupPresenter = new PopupPresenter;
@@ -21,6 +23,6 @@ render(profileView, headerContainer);
 render(filterView, mainContainer);
 render(sortView, mainContainer);
 
-filmsListPresenter.init();
+filmsListPresenter.init(movieModel);
 
-popupPresenter.init();
+//popupPresenter.init();

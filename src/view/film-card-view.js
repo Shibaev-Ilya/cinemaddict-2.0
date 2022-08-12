@@ -1,30 +1,58 @@
 import {createElement} from '../render.js';
+import {humanizeDate} from '../utils.js';
 
-const createFilmCardTemplate = () => (`
-<article class="film-card">
+const createFilmCardTemplate = (movie) => {
+  console.log(movie);
+  const {id, filmInfo, userDetails, comments} = movie;
+  const genres = filmInfo.genre;
+  const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
+  const getMaxDescription = (text) => {
+    if (text.length < 140) return text;
+
+    return text.substring(0, 140) + '...';
+  };
+  const minutesToHours = (totalMinutes) => {
+    if (Number(totalMinutes) < 60 ) return `${totalMinutes}m`;
+
+    const minutes = totalMinutes % 60;
+    const hours = Math.floor(totalMinutes / 60);
+
+    if (minutes !== 0) {
+      return `${hours}h ${minutes}m`;
+    } else {
+      return `${hours}h`;
+    }
+
+  };
+
+  return (`<article class="film-card">
   <a class="film-card__link">
-    <h3 class="film-card__title">Sagebrush Trail</h3>
-    <p class="film-card__rating">4.0</p>
+    <h3 class="film-card__title">${filmInfo.title} ${id}</h3>
+    <p class="film-card__rating">${filmInfo.totalRating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">1937</span>
-      <span class="film-card__duration">54m</span>
-      <span class="film-card__genre">Western</span>
+      <span class="film-card__year">${humanizeDate(filmInfo.release.date, 'YYYY')}</span>
+      <span class="film-card__duration">${minutesToHours(filmInfo.runtime)}</span>
+      <span class="film-card__genre">${genres.join(', ')}</span>
     </p>
     <img src="./images/posters/sagebrush-trail.jpg" alt="" class="film-card__poster">
-    <p class="film-card__description">Lorem ipsum dolor. Quisque eu dignissim sem, vitae sodales dolor. Duis act…</p>
-    <span class="film-card__comments">51 comments</span>
+    <p class="film-card__description">${getMaxDescription(filmInfo.description)}</p>
+    <span class="film-card__comments">${comments.length} comments</span>
   </a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-    <button class="film-card__controls-item film-card__controls-item--favorite film-card__controls-item--active" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${getActiveClass(userDetails.watchlist)}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${getActiveClass(userDetails.alreadyWatched)}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item film-card__controls-item--favorite ${getActiveClass(userDetails.favorite)}" type="button">Mark as favorite</button>
   </div>
-</article>
-`);
+</article>`)
+};
 
 export default class FilmCardView {
+  constructor(movie) {
+    this.movie = movie;
+  }
+
   getTemplate() {
-    return createFilmCardTemplate();
+    return createFilmCardTemplate(this.movie);
   }
 
   getElement() {
