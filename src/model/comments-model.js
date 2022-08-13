@@ -4,5 +4,5 @@ export default class CommentsModel {
 
   comments = allComments;
 
-  getComments = () => this.comments;
+  getComments = (filmId) => this.comments[filmId];
 }

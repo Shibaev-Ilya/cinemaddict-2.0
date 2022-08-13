@@ -11,7 +11,7 @@ const srcPosters = [
   'the-dance-of-life.jpg'
 ];
 
-const getComments = (filmId) => allComments[Number(filmId)].map((el) => el.id);
+const getComments = (filmId) => allComments[filmId].map((el) => el.id);
 
 const getStatus = () => Boolean(getRandomInteger(0, 1));
 
@@ -43,9 +43,9 @@ const generateMovie = () => {
       runtime: getRandomInteger(63, 130),
       genre: [
         'Drama',
-        'Sci-Fi',
         'Thriller',
-        'Horror'
+        'Horror',
+        'Sci-Fi',
       ],
       description: 'Oscar-winning film, true masterpiece where love and death are closer to heroes than their family. Oscar-winning film, true masterpiece where love and death are closer to heroes than their family.'
     },

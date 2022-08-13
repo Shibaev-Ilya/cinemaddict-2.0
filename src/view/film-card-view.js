@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {humanizeDate} from '../utils.js';
+import {humanizeDate, minutesToHours} from '../utils.js';
 
 const cardControlsTemplate = (details) => {
   const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
@@ -22,19 +22,6 @@ const createFilmCardTemplate = (movie) => {
     if (text.length < 140) {return text;}
 
     return `${text.substring(0, 140) }...`;
-  };
-  const minutesToHours = (totalMinutes) => {
-    if (Number(totalMinutes) < 60 ) {return `${totalMinutes}m`;}
-
-    const minutes = totalMinutes % 60;
-    const hours = Math.floor(totalMinutes / 60);
-
-    if (minutes !== 0) {
-      return `${hours}h ${minutes}m`;
-    } else {
-      return `${hours}h`;
-    }
-
   };
 
   return (`<article class="film-card">

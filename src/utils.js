@@ -19,4 +19,18 @@ const humanizeDate = (date, format) => dayjs(date).format(format);
 
 const FILM_AMOUNT = 30;
 
-export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT};
+const minutesToHours = (totalMinutes) => {
+  if (Number(totalMinutes) < 60 ) {return `${totalMinutes}m`;}
+
+  const minutes = totalMinutes % 60;
+  const hours = Math.floor(totalMinutes / 60);
+
+  if (minutes !== 0) {
+    return `${hours}h ${minutes}m`;
+  } else {
+    return `${hours}h`;
+  }
+
+};
+
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours};
