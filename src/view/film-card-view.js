@@ -1,10 +1,23 @@
 import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
 
+const cardControlsTemplate = (details) => {
+  const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
+
+  return (`
+  <div class="film-card__controls">
+    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${getActiveClass(details.watchlist)}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${getActiveClass(details.alreadyWatched)}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item film-card__controls-item--favorite ${getActiveClass(details.favorite)}" type="button">Mark as favorite</button>
+  </div>
+  `);
+};
+
+const cardCommentsTemplate = (comments) => (`<span class="film-card__comments">${comments.length} comments</span>`);
+
 const createFilmCardTemplate = (movie) => {
   const {id, filmInfo, userDetails, comments} = movie;
   const genres = filmInfo.genre;
-  const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
   const getMaxDescription = (text) => {
     if (text.length < 140) {return text;}
 
@@ -35,13 +48,9 @@ const createFilmCardTemplate = (movie) => {
     </p>
     <img src="${filmInfo.poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${getMaxDescription(filmInfo.description)}</p>
-    <span class="film-card__comments">${comments.length} comments</span>
+    ${cardCommentsTemplate(comments)}
   </a>
-  <div class="film-card__controls">
-    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${getActiveClass(userDetails.watchlist)}" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${getActiveClass(userDetails.alreadyWatched)}" type="button">Mark as watched</button>
-    <button class="film-card__controls-item film-card__controls-item--favorite ${getActiveClass(userDetails.favorite)}" type="button">Mark as favorite</button>
-  </div>
+  ${cardControlsTemplate(userDetails)}
 </article>`);
 };
 
