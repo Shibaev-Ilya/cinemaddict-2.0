@@ -9,6 +9,14 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+//счетчик id
+const getId = () => {
+  let i = 0;
+  return () => i++;
+};
+
 const humanizeDate = (date, format) => dayjs(date).format(format);
 
-export {getRandomInteger, humanizeDate};
+const FILM_AMOUNT = 30;
+
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT};

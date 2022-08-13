@@ -33,7 +33,7 @@ const createFilmCardTemplate = (movie) => {
       <span class="film-card__duration">${minutesToHours(filmInfo.runtime)}</span>
       <span class="film-card__genre">${genres.join(', ')}</span>
     </p>
-    <img src="./images/posters/sagebrush-trail.jpg" alt="" class="film-card__poster">
+    <img src="${filmInfo.poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${getMaxDescription(filmInfo.description)}</p>
     <span class="film-card__comments">${comments.length} comments</span>
   </a>

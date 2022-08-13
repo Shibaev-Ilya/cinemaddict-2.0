@@ -18,7 +18,6 @@ const filterView = new FilterView;
 const sortView = new SortView;
 const profileView = new ProfileView;
 
-
 render(profileView, headerContainer);
 render(filterView, mainContainer);
 render(sortView, mainContainer);
