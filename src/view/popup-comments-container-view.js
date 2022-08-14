@@ -2,7 +2,6 @@ import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
 
 const createCommentsListTemplate = (comments) => {
-  const initialValue = '';
   return comments.reduce((accumulator, comment) => (`${accumulator}
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
@@ -18,7 +17,7 @@ const createCommentsListTemplate = (comments) => {
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
-          </li>`), initialValue);
+          </li>`), '');
 };
 
 const createFormTemplate = () => (`<form class="film-details__new-comment" action="" method="get">
