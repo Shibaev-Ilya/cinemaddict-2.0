@@ -2,7 +2,7 @@ import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
 
 const createCommentsListTemplate = (comments) => {
-  let initialValue = '';
+  const initialValue = '';
   return comments.reduce((accumulator, comment) => (`${accumulator}
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
