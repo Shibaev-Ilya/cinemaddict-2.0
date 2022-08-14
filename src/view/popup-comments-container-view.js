@@ -2,8 +2,8 @@ import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
 
 const createCommentsListTemplate = (comments) => {
-
-  const tempComments = comments.map( (comment) => (`
+  let initialValue = '';
+  return comments.reduce((accumulator, comment) => (`${accumulator}
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
@@ -18,10 +18,7 @@ const createCommentsListTemplate = (comments) => {
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
-          </li>
-        `));
-
-  return tempComments.join('');
+          </li>`), initialValue);
 };
 
 const createFormTemplate = () => (`<form class="film-details__new-comment" action="" method="get">

@@ -16,12 +16,13 @@ const cardControlsTemplate = (details) => {
 const cardCommentsTemplate = (comments) => (`<span class="film-card__comments">${comments.length} comments</span>`);
 
 const createFilmCardTemplate = (movie) => {
+  const MAX_TEXT_LENGTH = 140;
   const {id, filmInfo, userDetails, comments} = movie;
   const genres = filmInfo.genre;
   const getMaxDescription = (text) => {
-    if (text.length < 140) {return text;}
+    if (text.length < MAX_TEXT_LENGTH) {return text;}
 
-    return `${text.substring(0, 140) }...`;
+    return `${text.substring(0, MAX_TEXT_LENGTH) }...`;
   };
 
   return (`<article class="film-card">

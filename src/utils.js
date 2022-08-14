@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 
+const FILM_AMOUNT = 30;
+const HOUR = 60;
+
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
@@ -17,20 +20,13 @@ const getId = () => {
 
 const humanizeDate = (date, format) => dayjs(date).format(format);
 
-const FILM_AMOUNT = 30;
-
 const minutesToHours = (totalMinutes) => {
-  if (Number(totalMinutes) < 60 ) {return `${totalMinutes}m`;}
+  if (Number(totalMinutes) < HOUR ) {return `${totalMinutes}m`;}
 
-  const minutes = totalMinutes % 60;
-  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % HOUR;
+  const hours = Math.floor(totalMinutes / HOUR);
 
-  if (minutes !== 0) {
-    return `${hours}h ${minutes}m`;
-  } else {
-    return `${hours}h`;
-  }
-
+  return minutes !== 0 ? `${hours}h ${minutes}m` : `${hours}h`;
 };
 
 export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours};

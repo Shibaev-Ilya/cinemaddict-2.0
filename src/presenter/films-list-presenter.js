@@ -6,6 +6,8 @@ import FilmCardView from '../view/film-card-view';
 import ShowMoreButton from '../view/show-more-button';
 import PopupPresenter from './popup-presenter.js';
 
+const MOVIES_PER_PAGE = 10;
+
 export default class FilmsListPresenter {
 
   filmsContainer = new FilmsContainer;
@@ -26,7 +28,7 @@ export default class FilmsListPresenter {
     render(this.filmsList, this.filmsContainer.getElement());
     render(this.filmsListContainer, this.filmsList.getElement());
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < MOVIES_PER_PAGE; i++) {
       this.renderMovie(this.moviesData[i]);
     }
 
