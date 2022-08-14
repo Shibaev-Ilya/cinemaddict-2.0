@@ -1,6 +1,8 @@
 import {createElement} from '../render.js';
 import {humanizeDate, minutesToHours} from '../utils.js';
 
+const MAX_TEXT_LENGTH = 140;
+
 const cardControlsTemplate = (details) => {
   const getActiveClass = (data) => data ? 'film-card__controls-item--active' : '';
 
@@ -16,7 +18,6 @@ const cardControlsTemplate = (details) => {
 const cardCommentsTemplate = (comments) => (`<span class="film-card__comments">${comments.length} comments</span>`);
 
 const createFilmCardTemplate = (movie) => {
-  const MAX_TEXT_LENGTH = 140;
   const {id, filmInfo, userDetails, comments} = movie;
   const genres = filmInfo.genre;
   const getMaxDescription = (text) => {
