@@ -6,19 +6,23 @@ import PopupControlsView from '../view/popup-contols-view';
 
 export default class PopupPresenter {
 
-  popupMainContainerView = new PopupMainContainerView;
-  popupTopContainerView = new PopupTopContainerView;
-  popupCommentsContainerView = new PopupCommentsContainerView;
-  popupControlsView = new PopupControlsView;
+  init = (movie, comments) => {
+    this.popupTopContainerView = new PopupTopContainerView(movie);
+    this.popupControlsView = new PopupControlsView(movie.userDetails);
+    this.popupCommentsContainerView = new PopupCommentsContainerView(comments);
 
+    this.renderPopup();
+  };
 
-  init = () => {
-    const popupMainContainerInner = this.popupMainContainerView.getElement().querySelector('.film-details__inner');
-    const footerContainer = document.querySelector('.footer');
+  renderPopup = () => {
+    this.popupMainContainerView = new PopupMainContainerView;
+    this.popupMainContainerInner = this.popupMainContainerView.getElement().querySelector('.film-details__inner');
+    this.footerContainer = document.querySelector('.footer');
 
-    render(this.popupMainContainerView, footerContainer, RenderPosition.AFTEREND);
-    render(this.popupTopContainerView, popupMainContainerInner);
-    render(this.popupCommentsContainerView, popupMainContainerInner);
+    render(this.popupMainContainerView, this.footerContainer, RenderPosition.AFTEREND);
+    render(this.popupTopContainerView, this.popupMainContainerInner);
+    render(this.popupCommentsContainerView, this.popupMainContainerInner);
     render(this.popupControlsView, this.popupTopContainerView.getElement());
   };
+
 }

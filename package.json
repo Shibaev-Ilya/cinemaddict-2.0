@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "lint": "eslint src/",
+    "lint fix": "eslint src/ --fix",
     "build": "webpack --mode production",
     "start": "webpack serve --mode development"
   },
@@ -28,5 +29,9 @@
   },
   "engines": {
     "node": "16"
+  },
+  "dependencies": {
+    "dayjs": "1.11.3",
+    "he": "1.2.0"
   }
 }
