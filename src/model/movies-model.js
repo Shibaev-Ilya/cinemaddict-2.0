@@ -5,5 +5,5 @@ export default class MovieModel {
 
   get movies() {
     return this.#movies;
-  };
+  }
 }
