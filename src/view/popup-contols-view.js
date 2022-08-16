@@ -12,22 +12,25 @@ const createPopupControlsTemplate = (userDetails) => {
 };
 
 export default class PopupControlsView {
+  #element = null;
+  #userDetails = null;
+
   constructor(userDetails) {
-    this.userDetails = userDetails;
+    this.#userDetails = userDetails;
   }
 
-  getTemplate() {
-    return createPopupControlsTemplate(this.userDetails);
+  get template() {
+    return createPopupControlsTemplate(this.#userDetails);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

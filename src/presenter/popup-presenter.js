@@ -5,24 +5,30 @@ import PopupCommentsContainerView from '../view/popup-comments-container-view';
 import PopupControlsView from '../view/popup-contols-view';
 
 export default class PopupPresenter {
+  #popupMainContainerView = null;
+  #popupMainContainerInner = null;
+  #footerContainer = null;
+  #popupTopContainerView = null;
+  #popupControlsView = null;
+  #popupCommentsContainerView = null;
 
-  init = (movie, comments) => {
-    this.popupTopContainerView = new PopupTopContainerView(movie);
-    this.popupControlsView = new PopupControlsView(movie.userDetails);
-    this.popupCommentsContainerView = new PopupCommentsContainerView(comments);
+  #renderPopup = () => {
+    this.#popupMainContainerView = new PopupMainContainerView;
+    this.#popupMainContainerInner = this.#popupMainContainerView.element.querySelector('.film-details__inner');
+    this.#footerContainer = document.querySelector('.footer');
 
-    this.renderPopup();
+    render(this.#popupMainContainerView, this.#footerContainer, RenderPosition.AFTEREND);
+    render(this.#popupTopContainerView, this.#popupMainContainerInner);
+    render(this.#popupCommentsContainerView, this.#popupMainContainerInner);
+    render(this.#popupControlsView, this.#popupTopContainerView.element);
   };
 
-  renderPopup = () => {
-    this.popupMainContainerView = new PopupMainContainerView;
-    this.popupMainContainerInner = this.popupMainContainerView.getElement().querySelector('.film-details__inner');
-    this.footerContainer = document.querySelector('.footer');
+  init = (movie, comments) => {
+    this.#popupTopContainerView = new PopupTopContainerView(movie);
+    this.#popupControlsView = new PopupControlsView(movie.userDetails);
+    this.#popupCommentsContainerView = new PopupCommentsContainerView(comments);
 
-    render(this.popupMainContainerView, this.footerContainer, RenderPosition.AFTEREND);
-    render(this.popupTopContainerView, this.popupMainContainerInner);
-    render(this.popupCommentsContainerView, this.popupMainContainerInner);
-    render(this.popupControlsView, this.popupTopContainerView.getElement());
+    this.#renderPopup();
   };
 
 }
