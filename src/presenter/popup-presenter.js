@@ -11,6 +11,17 @@ export default class PopupPresenter {
   #popupTopContainerView = null;
   #popupControlsView = null;
   #popupCommentsContainerView = null;
+  #movie = null;
+  #comments = null;
+
+  constructor(movie, comments) {
+    this.#movie = movie;
+    this.#comments = comments;
+
+    this.#popupTopContainerView = new PopupTopContainerView(this.#movie);
+    this.#popupControlsView = new PopupControlsView(this.#movie.userDetails);
+    this.#popupCommentsContainerView = new PopupCommentsContainerView(this.#comments);
+  }
 
   #renderPopup = () => {
     this.#popupMainContainerView = new PopupMainContainerView;
@@ -23,10 +34,34 @@ export default class PopupPresenter {
     render(this.#popupControlsView, this.#popupTopContainerView.element);
   };
 
-  init = (movie, comments) => {
-    this.#popupTopContainerView = new PopupTopContainerView(movie);
-    this.#popupControlsView = new PopupControlsView(movie.userDetails);
-    this.#popupCommentsContainerView = new PopupCommentsContainerView(comments);
+  #closePopup = () => {
+    document.removeEventListener('keydown',this.#onEscKeyDown);
+    this.#popupMainContainerView.element.remove();
+    document.body.classList.remove('hide-overflow');
+  };
+
+  #onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#closePopup();
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+    }
+  };
+
+  #closeOpenedPopup = () => {
+    const popup = document.querySelector('.film-details');
+    if(popup !== null) {
+      popup.remove();
+    }
+  };
+
+  openPopup = () => {
+    const buttonClose = this.#popupTopContainerView.element.querySelector('.js-button-close');
+
+    this.#closeOpenedPopup();
+    buttonClose.addEventListener('click', this.#closePopup);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+    document.body.classList.add('hide-overflow');
 
     this.#renderPopup();
   };

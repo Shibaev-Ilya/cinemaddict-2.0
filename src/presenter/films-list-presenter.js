@@ -14,7 +14,6 @@ export default class FilmsListPresenter {
   #filmsListContainer = new FilmsListContainer;
   #filmsList = new FilmsList;
   #showMoreButton = new ShowMoreButton;
-  #popupPresenter = new PopupPresenter;
   #movieModel = null;
   #commentsModel = null;
   #moviesData = null;
@@ -23,6 +22,15 @@ export default class FilmsListPresenter {
   constructor (mainContainer) {
     this.#mainContainer = mainContainer;
   }
+
+  #renderMovie = (movie) => {
+    const movieComponent = new FilmCardView(movie);
+    const movieComments = this.#commentsModel.getComments(movie.id);
+    const popupPresenter = new PopupPresenter(movie, movieComments);
+
+    movieComponent.element.addEventListener('click', popupPresenter.openPopup);
+    render(movieComponent, this.#filmsListContainer.element);
+  };
 
   init = (movieModel, commentsModel) => {
     this.#movieModel = movieModel;
@@ -34,19 +42,10 @@ export default class FilmsListPresenter {
     render(this.#filmsListContainer, this.#filmsList.element);
 
     for (let i = 0; i < MOVIES_PER_PAGE; i++) {
-      this.renderMovie(this.#moviesData[i]);
+      this.#renderMovie(this.#moviesData[i]);
     }
 
-
     render(this.#showMoreButton, this.#filmsList.element);
-  };
-
-  renderMovie = (movie) => {
-    const movieComponent = new FilmCardView(movie);
-    render(movieComponent, this.#filmsListContainer.element);
-
-    const movieComments = this.#commentsModel.getComments(movie.id);
-    this.#popupPresenter.init(movie, movieComments);
   };
 
 }
