@@ -40,7 +40,7 @@ export default class PopupPresenter {
     document.body.classList.remove('hide-overflow');
   };
 
-  #onClickButtonClose = () => {
+  #onButtonCloseClick = () => {
     this.#closePopup();
   };
 
@@ -62,7 +62,7 @@ export default class PopupPresenter {
     const buttonClose = this.#popupTopContainerView.element.querySelector('.js-button-close');
 
     this.#closeOpenedPopup();
-    buttonClose.addEventListener('click', this.#onClickButtonClose);
+    buttonClose.addEventListener('click', this.#onButtonCloseClick);
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
 
