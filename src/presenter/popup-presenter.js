@@ -35,16 +35,19 @@ export default class PopupPresenter {
   };
 
   #closePopup = () => {
-    document.removeEventListener('keydown',this.#onEscKeyDown);
+    document.removeEventListener('keydown', this.#onDocumentKeydown);
     this.#popupMainContainerView.element.remove();
     document.body.classList.remove('hide-overflow');
   };
 
-  #onEscKeyDown = (evt) => {
+  #onClickButtonClose = () => {
+    this.#closePopup();
+  };
+
+  #onDocumentKeydown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#closePopup();
-      document.removeEventListener('keydown', this.#onEscKeyDown);
     }
   };
 
@@ -59,8 +62,8 @@ export default class PopupPresenter {
     const buttonClose = this.#popupTopContainerView.element.querySelector('.js-button-close');
 
     this.#closeOpenedPopup();
-    buttonClose.addEventListener('click', this.#closePopup);
-    document.addEventListener('keydown', this.#onEscKeyDown);
+    buttonClose.addEventListener('click', this.#onClickButtonClose);
+    document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
 
     this.#renderPopup();
