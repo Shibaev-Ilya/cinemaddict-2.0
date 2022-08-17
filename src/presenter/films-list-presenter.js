@@ -10,40 +10,42 @@ const MOVIES_PER_PAGE = 10;
 
 export default class FilmsListPresenter {
 
-  filmsContainer = new FilmsContainer;
-  filmsListContainer = new FilmsListContainer;
-  filmsList = new FilmsList;
-  showMoreButton = new ShowMoreButton;
+  #filmsContainer = new FilmsContainer;
+  #filmsListContainer = new FilmsListContainer;
+  #filmsList = new FilmsList;
+  #showMoreButton = new ShowMoreButton;
+  #movieModel = null;
+  #commentsModel = null;
+  #moviesData = null;
+  #mainContainer = null;
 
   constructor (mainContainer) {
-    this.mainContainer = mainContainer;
+    this.#mainContainer = mainContainer;
   }
 
-  init = (movieModel, commentsModel) => {
-    this.movieModel = movieModel;
-    this.commentsModel = commentsModel;
-    this.moviesData = [...this.movieModel.getMovies()];
+  #renderMovie = (movie) => {
+    const movieComponent = new FilmCardView(movie);
+    const movieComments = this.#commentsModel.getComments(movie.id);
+    const popupPresenter = new PopupPresenter(movie, movieComments);
 
-    render(this.filmsContainer, this.mainContainer);
-    render(this.filmsList, this.filmsContainer.getElement());
-    render(this.filmsListContainer, this.filmsList.getElement());
-
-    for (let i = 0; i < MOVIES_PER_PAGE; i++) {
-      this.renderMovie(this.moviesData[i]);
-    }
-
-
-    render(this.showMoreButton, this.filmsList.getElement());
+    movieComponent.element.addEventListener('click', popupPresenter.openPopup);
+    render(movieComponent, this.#filmsListContainer.element);
   };
 
-  renderMovie = (movie) => {
-    const movieComponent = new FilmCardView(movie);
-    render(movieComponent, this.filmsListContainer.getElement());
+  init = (movieModel, commentsModel) => {
+    this.#movieModel = movieModel;
+    this.#commentsModel = commentsModel;
+    this.#moviesData = [...this.#movieModel.movies];
 
-    const popupPresenter = new PopupPresenter;
-    const movieComments = this.commentsModel.getComments(movie.id);
+    render(this.#filmsContainer, this.#mainContainer);
+    render(this.#filmsList, this.#filmsContainer.element);
+    render(this.#filmsListContainer, this.#filmsList.element);
 
-    popupPresenter.init(movie, movieComments);
+    for (let i = 0; i < MOVIES_PER_PAGE; i++) {
+      this.#renderMovie(this.#moviesData[i]);
+    }
+
+    render(this.#showMoreButton, this.#filmsList.element);
   };
 
 }
