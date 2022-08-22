@@ -12,7 +12,7 @@ const headerContainer = document.querySelector('.header');
 const movieModel = new MovieModel;
 const commentsModel = new CommentsModel;
 
-const filmsListPresenter = new FilmsListPresenter(mainContainer);
+const filmsListPresenter = new FilmsListPresenter(mainContainer, movieModel, commentsModel);
 
 const filterView = new FilterView;
 const sortView = new SortView;
@@ -22,4 +22,4 @@ render(profileView, headerContainer);
 render(filterView, mainContainer);
 render(sortView, mainContainer);
 
-filmsListPresenter.init(movieModel, commentsModel);
+filmsListPresenter.init();

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const FILM_AMOUNT = 30;
+const FILM_AMOUNT = 14;
 const HOUR = 60;
 
 // Функция из интернета по генерации случайного числа из диапазона
