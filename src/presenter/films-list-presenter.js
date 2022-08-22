@@ -5,8 +5,9 @@ import FilmsList from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButton from '../view/show-more-button';
 import PopupPresenter from './popup-presenter.js';
+import NoMoviesView from '../view/no-movies-view.js';
 
-const MOVIES_PER_PAGE = 10;
+const MOVIES_PER_PAGE = 5;
 
 export default class FilmsListPresenter {
 
@@ -18,9 +19,13 @@ export default class FilmsListPresenter {
   #commentsModel = null;
   #moviesData = null;
   #mainContainer = null;
+  #noMoviesView = new NoMoviesView;
+  #renderedMoviesCount = MOVIES_PER_PAGE;
 
-  constructor (mainContainer) {
+  constructor (mainContainer, movieModel, commentsModel) {
     this.#mainContainer = mainContainer;
+    this.#movieModel = movieModel;
+    this.#commentsModel = commentsModel;
   }
 
   #renderMovie = (movie) => {
@@ -32,20 +37,43 @@ export default class FilmsListPresenter {
     render(movieComponent, this.#filmsListContainer.element);
   };
 
-  init = (movieModel, commentsModel) => {
-    this.#movieModel = movieModel;
-    this.#commentsModel = commentsModel;
-    this.#moviesData = [...this.#movieModel.movies];
+  #onShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+    this.#moviesData
+      .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
+      .forEach( (movie) => this.#renderMovie(movie) );
 
+    this.#renderedMoviesCount += MOVIES_PER_PAGE;
+
+    if (this.#renderedMoviesCount >= this.#moviesData.length) {
+      this.#showMoreButton.element.remove();
+      this.#showMoreButton.removeElement();
+    }
+  };
+
+  #renderBoard = () => {
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
     render(this.#filmsListContainer, this.#filmsList.element);
 
-    for (let i = 0; i < MOVIES_PER_PAGE; i++) {
+    if (this.#moviesData.length === 0) {
+      render(this.#noMoviesView, this.#filmsListContainer.element);
+      return;
+    }
+
+    for (let i = 0; i < Math.min(this.#moviesData.length, MOVIES_PER_PAGE); i++) {
       this.#renderMovie(this.#moviesData[i]);
     }
 
-    render(this.#showMoreButton, this.#filmsList.element);
+    if (this.#moviesData.length > MOVIES_PER_PAGE) {
+      render(this.#showMoreButton, this.#filmsList.element);
+      this.#showMoreButton.element.addEventListener('click', this.#onShowMoreButtonClick);
+    }
+  };
+
+  init = () => {
+    this.#moviesData = [...this.#movieModel.movies];
+    this.#renderBoard();
   };
 
 }
