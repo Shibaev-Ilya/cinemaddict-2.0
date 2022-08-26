@@ -33,12 +33,12 @@ export default class FilmsListPresenter {
     const movieComments = this.#commentsModel.getComments(movie.id);
     const popupPresenter = new PopupPresenter(movie, movieComments);
 
-    movieComponent.element.addEventListener('click', popupPresenter.openPopup);
+    movieComponent.setClickCardHandler(popupPresenter.openPopup);
+
     render(movieComponent, this.#filmsListContainer.element);
   };
 
-  #onShowMoreButtonClick = (evt) => {
-    evt.preventDefault();
+  #onShowMoreButtonClick = () => {
     this.#moviesData
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
       .forEach( (movie) => this.#renderMovie(movie) );
@@ -67,7 +67,7 @@ export default class FilmsListPresenter {
 
     if (this.#moviesData.length > MOVIES_PER_PAGE) {
       render(this.#showMoreButton, this.#filmsList.element);
-      this.#showMoreButton.element.addEventListener('click', this.#onShowMoreButtonClick);
+      this.#showMoreButton.setClickHandler(this.#onShowMoreButtonClick);
     }
   };
 

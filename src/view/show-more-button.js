@@ -1,22 +1,22 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
 
 const createShowMoreButtonTemplate = () => ('<button class="films-list__show-more">Show more</button>');
 
-export default class ShowMoreButton {
-  #element = null;
+export default class ShowMoreButton extends AbstractView {
 
   get template() {
     return createShowMoreButtonTemplate();
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.addEventListener('click', this.#onShowMoreButtonClick);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #onShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
+
 }

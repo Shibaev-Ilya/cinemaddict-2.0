@@ -59,10 +59,11 @@ export default class PopupPresenter {
   };
 
   openPopup = () => {
-    const buttonClose = this.#popupTopContainerView.element.querySelector('.js-button-close');
 
     this.#closeOpenedPopup();
-    buttonClose.addEventListener('click', this.#onButtonCloseClick);
+
+    this.#popupTopContainerView.setClickCloseButtonHandler(this.#onButtonCloseClick);
+
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
 

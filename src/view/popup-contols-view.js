@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createPopupControlsTemplate = (userDetails) => {
   const getActiveClass = (data) => data ? 'film-details__control-button--active' : '';
@@ -11,11 +11,11 @@ const createPopupControlsTemplate = (userDetails) => {
 `);
 };
 
-export default class PopupControlsView {
-  #element = null;
+export default class PopupControlsView extends AbstractView {
   #userDetails = null;
 
   constructor(userDetails) {
+    super();
     this.#userDetails = userDetails;
   }
 
@@ -23,14 +23,4 @@ export default class PopupControlsView {
     return createPopupControlsTemplate(this.#userDetails);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
