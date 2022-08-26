@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeDate, minutesToHours} from '../utils.js';
 
 const createPopupTopContainerTemplate = (movie) => {
@@ -68,11 +68,11 @@ const createPopupTopContainerTemplate = (movie) => {
 `);
 };
 
-export default class PopupTopContainerView {
-  #element = null;
+export default class PopupTopContainerView extends AbstractView {
   #movie = null;
 
   constructor(movie) {
+    super();
     this.#movie = movie;
   }
 
@@ -80,14 +80,15 @@ export default class PopupTopContainerView {
     return createPopupTopContainerTemplate(this.#movie);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
+  setClickCloseButtonHandler = (callback) => {
+    const buttonClose = this.element.querySelector('.js-button-close');
+    this._callback.clickCloseButton = callback;
+    buttonClose.addEventListener('click', this.#onButtonCloseClick);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #onButtonCloseClick = (evt) => {
+    evt.preventDefault();
+    this._callback.clickCloseButton();
+  };
+
 }
