@@ -8,7 +8,7 @@ const createNewFilterItemTemplate = (filter) => {
     class="main-navigation__item ${type === 'all' ? 'main-navigation__item--active' : ''}"
     data-filter-type="${type}">
     ${name}
-    ${type !== 'all' ? `<span class="main-navigation__item-count">${  count  }</span>` : ''}
+    ${type !== 'all' ? `<span class="main-navigation__item-count">${ count }</span>` : ''}
     </a>
   `);
 };

@@ -7,7 +7,7 @@ export default class FilterPresenter {
   #moviesData = null;
 
   constructor(mainContainer) {
-    this.#mainContainer = mainContainer
+    this.#mainContainer = mainContainer;
   }
 
   get filters() {
