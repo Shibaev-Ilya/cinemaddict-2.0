@@ -1,10 +1,9 @@
-import {render} from './render.js';
-import FilterView from './view/filter-view.js';
-import SortView from './view/sort-view.js';
-import ProfileView from './view/profile-view.js';
 import FilmsListPresenter from './presenter/films-list-presenter.js';
 import MovieModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
+import FilterPresenter from './presenter/filter-presenter.js';
+import SortPresenter from './presenter/sort-presenter.js';
+import ProfilePresenter from './presenter/profile-presenter.js';
 
 const mainContainer = document.querySelector('.main');
 const headerContainer = document.querySelector('.header');
@@ -12,14 +11,13 @@ const headerContainer = document.querySelector('.header');
 const movieModel = new MovieModel;
 const commentsModel = new CommentsModel;
 
-const filmsListPresenter = new FilmsListPresenter(mainContainer, movieModel, commentsModel);
+const profilePresenter = new ProfilePresenter(headerContainer);
+const filterPresenter = new FilterPresenter(mainContainer);
+const sortPresenter = new SortPresenter(mainContainer);
 
-const filterView = new FilterView;
-const sortView = new SortView;
-const profileView = new ProfileView;
+const filmsListPresenter = new FilmsListPresenter(mainContainer, movieModel, commentsModel, filterPresenter, sortPresenter);
 
-render(profileView, headerContainer);
-render(filterView, mainContainer);
-render(sortView, mainContainer);
+
+profilePresenter.init();
 
 filmsListPresenter.init();

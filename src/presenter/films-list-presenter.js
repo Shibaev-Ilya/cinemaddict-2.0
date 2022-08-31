@@ -19,13 +19,17 @@ export default class FilmsListPresenter {
   #commentsModel = null;
   #moviesData = null;
   #mainContainer = null;
+  #filterPresenter = null;
+  #sortPresenter = null;
   #noMoviesView = new NoMoviesView;
   #renderedMoviesCount = MOVIES_PER_PAGE;
 
-  constructor (mainContainer, movieModel, commentsModel) {
+  constructor (mainContainer, movieModel, commentsModel, filterPresenter, sortPresenter) {
     this.#mainContainer = mainContainer;
     this.#movieModel = movieModel;
     this.#commentsModel = commentsModel;
+    this.#filterPresenter = filterPresenter;
+    this.#sortPresenter = sortPresenter;
   }
 
   #renderMovie = (movie) => {
@@ -51,6 +55,11 @@ export default class FilmsListPresenter {
     }
   };
 
+  #renderFilters = () => {
+    this.#filterPresenter.init(this.#moviesData);
+    this.#sortPresenter.init(this.#moviesData);
+  };
+
   #renderBoard = () => {
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
@@ -73,6 +82,7 @@ export default class FilmsListPresenter {
 
   init = () => {
     this.#moviesData = [...this.#movieModel.movies];
+    this.#renderFilters();
     this.#renderBoard();
   };
 
