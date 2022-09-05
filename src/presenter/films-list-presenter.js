@@ -6,6 +6,8 @@ import FilmCardView from '../view/film-card-view';
 import ShowMoreButton from '../view/show-more-button';
 import PopupPresenter from './popup-presenter.js';
 import NoMoviesView from '../view/no-movies-view.js';
+import FilterPresenter from './filter-presenter.js';
+import SortPresenter from './sort-presenter.js';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -24,12 +26,12 @@ export default class FilmsListPresenter {
   #noMoviesView = new NoMoviesView;
   #renderedMoviesCount = MOVIES_PER_PAGE;
 
-  constructor (mainContainer, movieModel, commentsModel, filterPresenter, sortPresenter) {
+  constructor (mainContainer, movieModel, commentsModel) {
     this.#mainContainer = mainContainer;
     this.#movieModel = movieModel;
     this.#commentsModel = commentsModel;
-    this.#filterPresenter = filterPresenter;
-    this.#sortPresenter = sortPresenter;
+    this.#filterPresenter = new FilterPresenter(this.#mainContainer);
+    this.#sortPresenter = new SortPresenter(this.#mainContainer);
   }
 
   #renderMovie = (movie) => {

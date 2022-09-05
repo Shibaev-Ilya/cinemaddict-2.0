@@ -14,9 +14,7 @@ const createNewFilterItemTemplate = (filter) => {
 };
 
 const createFilterTemplate = (filters) => {
-  const filterItemsTemplate = filters
-    .map((filter) => createNewFilterItemTemplate(filter))
-    .join('');
+  const filterItemsTemplate = filters.reduce((accumulator, filter) => { return accumulator + createNewFilterItemTemplate(filter)}, '');
 
   return `<nav class="main-navigation">
     ${filterItemsTemplate}
