@@ -12,7 +12,7 @@ export default class FilmPresenter {
     this.#filmsListContainer = filmsListContainer;
   }
 
-  renderMovie = (movie) => {
+  init = (movie) => {
     const movieComments = this.#commentsModel.getComments(movie.id);
     const movieComponent = new FilmCardView(movie);
     const popupPresenter = new PopupPresenter(movie, movieComments);

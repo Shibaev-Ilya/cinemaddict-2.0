@@ -33,12 +33,16 @@ export default class FilmsListPresenter {
     this.#sortPresenter = new SortPresenter(this.#mainContainer);
   }
 
-  #onShowMoreButtonClick = () => {
+  #renderFilm = (movie) => {
     const filmPresenter = new FilmPresenter(this.#commentsModel, this.#filmsListContainer);
+    filmPresenter.init(movie);
+  };
+
+  #onShowMoreButtonClick = () => {
 
     this.#moviesData
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
-      .forEach( (movie) => filmPresenter.renderMovie(movie) );
+      .forEach( (movie) =>  this.#renderFilm(movie) );
 
     this.#renderedMoviesCount += MOVIES_PER_PAGE;
 
@@ -54,7 +58,6 @@ export default class FilmsListPresenter {
   };
 
   #renderBoard = () => {
-    const filmPresenter = new FilmPresenter(this.#commentsModel, this.#filmsListContainer);
 
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
@@ -66,7 +69,7 @@ export default class FilmsListPresenter {
     }
 
     for (let i = 0; i < Math.min(this.#moviesData.length, MOVIES_PER_PAGE); i++) {
-      filmPresenter.renderMovie(this.#moviesData[i]);
+      this.#renderFilm(this.#moviesData[i]);
     }
 
     if (this.#moviesData.length > MOVIES_PER_PAGE) {
