@@ -2,12 +2,11 @@ import {render} from '../render';
 import FilmsContainer from '../view/films-container-view';
 import FilmsListContainer from '../view/films-list-container-view';
 import FilmsList from '../view/films-list-view';
-import FilmCardView from '../view/film-card-view';
 import ShowMoreButton from '../view/show-more-button';
-import PopupPresenter from './popup-presenter.js';
 import NoMoviesView from '../view/no-movies-view.js';
 import FilterPresenter from './filter-presenter.js';
 import SortPresenter from './sort-presenter.js';
+import FilmPresenter from './film-presenter.js';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -34,20 +33,12 @@ export default class FilmsListPresenter {
     this.#sortPresenter = new SortPresenter(this.#mainContainer);
   }
 
-  #renderMovie = (movie) => {
-    const movieComponent = new FilmCardView(movie);
-    const movieComments = this.#commentsModel.getComments(movie.id);
-    const popupPresenter = new PopupPresenter(movie, movieComments);
-
-    movieComponent.setClickCardHandler(popupPresenter.openPopup);
-
-    render(movieComponent, this.#filmsListContainer.element);
-  };
-
   #onShowMoreButtonClick = () => {
+    const filmPresenter = new FilmPresenter(this.#commentsModel, this.#filmsListContainer);
+
     this.#moviesData
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
-      .forEach( (movie) => this.#renderMovie(movie) );
+      .forEach( (movie) => filmPresenter.renderMovie(movie) );
 
     this.#renderedMoviesCount += MOVIES_PER_PAGE;
 
@@ -63,6 +54,8 @@ export default class FilmsListPresenter {
   };
 
   #renderBoard = () => {
+    const filmPresenter = new FilmPresenter(this.#commentsModel, this.#filmsListContainer);
+
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
     render(this.#filmsListContainer, this.#filmsList.element);
@@ -73,7 +66,7 @@ export default class FilmsListPresenter {
     }
 
     for (let i = 0; i < Math.min(this.#moviesData.length, MOVIES_PER_PAGE); i++) {
-      this.#renderMovie(this.#moviesData[i]);
+      filmPresenter.renderMovie(this.#moviesData[i]);
     }
 
     if (this.#moviesData.length > MOVIES_PER_PAGE) {
