@@ -1,4 +1,4 @@
-import {render} from '../render';
+import {render, remove} from '../framework/render.js';
 import FilmsContainer from '../view/films-container-view';
 import FilmsListContainer from '../view/films-list-container-view';
 import FilmsList from '../view/films-list-view';
@@ -24,6 +24,7 @@ export default class FilmsListPresenter {
   #sortPresenter = null;
   #noMoviesView = new NoMoviesView;
   #renderedMoviesCount = MOVIES_PER_PAGE;
+  #filmPresenters = new Map();
 
   constructor (mainContainer, movieModel, commentsModel) {
     this.#mainContainer = mainContainer;
@@ -34,8 +35,17 @@ export default class FilmsListPresenter {
   }
 
   #renderFilm = (movie) => {
-    const filmPresenter = new FilmPresenter(this.#commentsModel, this.#filmsListContainer);
-    filmPresenter.init(movie);
+    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element);
+    this.#filmPresenters.set(movie.id, filmPresenter);
+
+    filmPresenter.init(movie, this.#commentsModel);
+  };
+
+  #clearFilmsList = () => {
+    this.#filmPresenters.forEach((presenter) => presenter.destroy());
+    this.#filmPresenters.clear();
+    this.#renderedMoviesCount = MOVIES_PER_PAGE;
+    remove(this.#showMoreButton);
   };
 
   #onShowMoreButtonClick = () => {

@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../render';
+import {render, RenderPosition} from '../framework/render.js';
 import PopupMainContainerView from '../view/popup-main-container-view';
 import PopupTopContainerView from '../view/popup-top-container-view';
 import PopupCommentsContainerView from '../view/popup-comments-container-view';
