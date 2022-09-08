@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card-view.js';
 import PopupPresenter from './popup-presenter.js';
 import {render, remove} from '../framework/render.js';
 import {replace} from '../framework/render';
+import PopupControlsView from '../view/popup-contols-view';
 
 export default class FilmPresenter {
 
@@ -9,21 +10,50 @@ export default class FilmPresenter {
   #filmsListContainer = null;
   #movie = null;
   #movieComponent = null;
+  #changeData = null;
+  #popupPresenter = null;
+  #movieComments = null;
 
-  constructor (filmsListContainer) {
+  constructor (filmsListContainer, changeData) {
     this.#filmsListContainer = filmsListContainer;
+    this.#changeData = changeData;
   }
+
+  #handleWatchlistClick = () => {
+    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} });
+  };
+
+  #handleAlreadyWatchedClick = () => {
+    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} });
+  };
+
+  #handleFavoriteWatchedClick = () => {
+    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} });
+  };
+
+  #handlerCardClick = () => {
+    this.#movieComments = this.#commentsModel.getComments(this.#movie.id);
+    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick);
+    this.#popupPresenter.openPopup(this.#movie, this.#movieComments);
+  };
+
 
   init = (movie, commentsModel) => {
     this.#movie = movie;
     this.#commentsModel = commentsModel;
 
     const prevMovieComponent = this.#movieComponent;
-    const movieComments = this.#commentsModel.getComments(this.#movie.id);
-    this.#movieComponent = new FilmCardView(this.#movie);
-    const popupPresenter = new PopupPresenter(this.#movie, movieComments);
 
-    this.#movieComponent.setClickCardHandler(popupPresenter.openPopup);
+    this.#movieComponent = new FilmCardView(this.#movie);
+
+    this.#movieComponent.setClickWatchlistHandler(this.#handleWatchlistClick);
+    this.#movieComponent.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
+    this.#movieComponent.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
+    this.#movieComponent.setClickCardHandler(this.#handlerCardClick);
+
+    if (this.#popupPresenter !== null && this.#popupPresenter.isRendered) {
+      this.#popupPresenter.init(this.#movie, this.#movieComments);
+    }
 
     if (prevMovieComponent === null ) {
       render(this.#movieComponent, this.#filmsListContainer);

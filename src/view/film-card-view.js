@@ -8,9 +8,9 @@ const cardControlsTemplate = (details) => {
 
   return (`
   <div class="film-card__controls">
-    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${getActiveClass(details.watchlist)}" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${getActiveClass(details.alreadyWatched)}" type="button">Mark as watched</button>
-    <button class="film-card__controls-item film-card__controls-item--favorite ${getActiveClass(details.favorite)}" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist js-add-to-watchlist ${getActiveClass(details.watchlist)}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item film-card__controls-item--mark-as-watched js-mark-as-watched ${getActiveClass(details.alreadyWatched)}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item film-card__controls-item--favorite js-favorite ${getActiveClass(details.favorite)}" type="button">Mark as favorite</button>
   </div>
   `);
 };
@@ -58,9 +58,43 @@ export default class FilmCardView extends AbstractView {
     this._callback.click = callback;
     this.element.addEventListener('click', this.#onCardClick);
   };
-
   #onCardClick = (evt) => {
     evt.preventDefault();
+
+    const buttons = evt.target.closest('.film-card__controls');
+
+    if (buttons) {
+      return;
+    }
+
     this._callback.click();
   };
+
+  setClickWatchlistHandler = (callback) => {
+    this._callback.watchlist = callback;
+    this.element.querySelector('.js-add-to-watchlist').addEventListener('click', this.#onWatchlistClick);
+  };
+  #onWatchlistClick = (evt) => {
+    evt.preventDefault();
+    this._callback.watchlist();
+  };
+
+  setClickAlreadyWatchedHandler = (callback) => {
+    this._callback.alreadyWatched = callback;
+    this.element.querySelector('.js-mark-as-watched').addEventListener('click', this.#onAlreadyWatchedClick);
+  };
+  #onAlreadyWatchedClick = (evt) => {
+    evt.preventDefault();
+    this._callback.alreadyWatched();
+  };
+
+  setClickFavoriteHandler = (callback) => {
+    this._callback.favorite = callback;
+    this.element.querySelector('.js-favorite').addEventListener('click', this.#onFavoriteClick);
+  };
+  #onFavoriteClick = (evt) => {
+    evt.preventDefault();
+    this._callback.favorite();
+  };
+
 }

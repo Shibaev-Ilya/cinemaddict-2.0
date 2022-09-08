@@ -7,6 +7,7 @@ import NoMoviesView from '../view/no-movies-view.js';
 import FilterPresenter from './filter-presenter.js';
 import SortPresenter from './sort-presenter.js';
 import FilmPresenter from './film-presenter.js';
+import {updateItem} from '../utils.js';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -18,7 +19,7 @@ export default class FilmsListPresenter {
   #showMoreButton = new ShowMoreButton;
   #movieModel = null;
   #commentsModel = null;
-  #moviesData = null;
+  #moviesData = [];
   #mainContainer = null;
   #filterPresenter = null;
   #sortPresenter = null;
@@ -34,8 +35,14 @@ export default class FilmsListPresenter {
     this.#sortPresenter = new SortPresenter(this.#mainContainer);
   }
 
+  #handleFilmChange = (updatedMovie) => {
+    this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    this.#filmPresenters.get(updatedMovie.id).init(updatedMovie, this.#commentsModel);
+  };
+
+
   #renderFilm = (movie) => {
-    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element);
+    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element, this.#handleFilmChange);
     this.#filmPresenters.set(movie.id, filmPresenter);
 
     filmPresenter.init(movie, this.#commentsModel);
