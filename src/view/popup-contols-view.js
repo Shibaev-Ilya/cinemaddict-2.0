@@ -32,6 +32,7 @@ export default class PopupControlsView extends AbstractView {
     this._callback.watchlist = callback;
     this.element.querySelector('.js-add-to-watchlist').addEventListener('click', this.#onWatchlistClick);
   };
+
   #onWatchlistClick = (evt) => {
     evt.preventDefault();
     this._callback.watchlist();
@@ -41,6 +42,7 @@ export default class PopupControlsView extends AbstractView {
     this._callback.alreadyWatched = callback;
     this.element.querySelector('.js-mark-as-watched').addEventListener('click', this.#onAlreadyWatchedClick);
   };
+
   #onAlreadyWatchedClick = (evt) => {
     evt.preventDefault();
     this._callback.alreadyWatched();
@@ -50,6 +52,7 @@ export default class PopupControlsView extends AbstractView {
     this._callback.favorite = callback;
     this.element.querySelector('.js-favorite').addEventListener('click', this.#onFavoriteClick);
   };
+
   #onFavoriteClick = (evt) => {
     evt.preventDefault();
     this._callback.favorite();

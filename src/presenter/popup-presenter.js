@@ -35,9 +35,16 @@ export default class PopupPresenter {
     render(this.#popupControlsView, this.#popupTopContainerView.element);
   };
 
+  #closeOpenedPopup = () => {
+    const popup = document.querySelector('.film-details');
+    if(popup !== null) {
+      popup.remove();
+    }
+  };
+
   #closePopup = () => {
     document.removeEventListener('keydown', this.#onDocumentKeydown);
-    console.log(this.#popupMainContainerView.element);
+    this.#closeOpenedPopup();
     this.#popupMainContainerView.element.remove();
     document.body.classList.remove('hide-overflow');
     this.isRendered = false;
@@ -51,13 +58,6 @@ export default class PopupPresenter {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#closePopup();
-    }
-  };
-
-  #closeOpenedPopup = () => {
-    const popup = document.querySelector('.film-details');
-    if(popup !== null) {
-      popup.remove();
     }
   };
 
@@ -98,6 +98,6 @@ export default class PopupPresenter {
     this.#closeOpenedPopup();
     this.#renderPopup();
     this.isRendered = true;
-  }
+  };
 
 }

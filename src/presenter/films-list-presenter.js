@@ -59,7 +59,7 @@ export default class FilmsListPresenter {
 
     this.#moviesData
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
-      .forEach( (movie) =>  this.#renderFilm(movie) );
+      .forEach( (movie) => this.#renderFilm(movie) );
 
     this.#renderedMoviesCount += MOVIES_PER_PAGE;
 
