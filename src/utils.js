@@ -29,4 +29,18 @@ const minutesToHours = (totalMinutes) => {
   return minutes !== 0 ? `${hours}h ${minutes}m` : `${hours}h`;
 };
 
-export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours};
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, updateItem};

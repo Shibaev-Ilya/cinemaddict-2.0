@@ -1,13 +1,13 @@
-import {render} from '../render';
+import {render, remove} from '../framework/render.js';
 import FilmsContainer from '../view/films-container-view';
 import FilmsListContainer from '../view/films-list-container-view';
 import FilmsList from '../view/films-list-view';
-import FilmCardView from '../view/film-card-view';
 import ShowMoreButton from '../view/show-more-button';
-import PopupPresenter from './popup-presenter.js';
 import NoMoviesView from '../view/no-movies-view.js';
 import FilterPresenter from './filter-presenter.js';
 import SortPresenter from './sort-presenter.js';
+import FilmPresenter from './film-presenter.js';
+import {updateItem} from '../utils.js';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -19,12 +19,13 @@ export default class FilmsListPresenter {
   #showMoreButton = new ShowMoreButton;
   #movieModel = null;
   #commentsModel = null;
-  #moviesData = null;
+  #moviesData = [];
   #mainContainer = null;
   #filterPresenter = null;
   #sortPresenter = null;
   #noMoviesView = new NoMoviesView;
   #renderedMoviesCount = MOVIES_PER_PAGE;
+  #filmPresenters = new Map();
 
   constructor (mainContainer, movieModel, commentsModel) {
     this.#mainContainer = mainContainer;
@@ -34,20 +35,31 @@ export default class FilmsListPresenter {
     this.#sortPresenter = new SortPresenter(this.#mainContainer);
   }
 
-  #renderMovie = (movie) => {
-    const movieComponent = new FilmCardView(movie);
-    const movieComments = this.#commentsModel.getComments(movie.id);
-    const popupPresenter = new PopupPresenter(movie, movieComments);
+  #handleFilmChange = (updatedMovie) => {
+    this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    this.#filmPresenters.get(updatedMovie.id).init(updatedMovie, this.#commentsModel);
+  };
 
-    movieComponent.setClickCardHandler(popupPresenter.openPopup);
 
-    render(movieComponent, this.#filmsListContainer.element);
+  #renderFilm = (movie) => {
+    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element, this.#handleFilmChange);
+    this.#filmPresenters.set(movie.id, filmPresenter);
+
+    filmPresenter.init(movie, this.#commentsModel);
+  };
+
+  #clearFilmsList = () => {
+    this.#filmPresenters.forEach((presenter) => presenter.destroy());
+    this.#filmPresenters.clear();
+    this.#renderedMoviesCount = MOVIES_PER_PAGE;
+    remove(this.#showMoreButton);
   };
 
   #onShowMoreButtonClick = () => {
+
     this.#moviesData
       .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
-      .forEach( (movie) => this.#renderMovie(movie) );
+      .forEach( (movie) => this.#renderFilm(movie) );
 
     this.#renderedMoviesCount += MOVIES_PER_PAGE;
 
@@ -63,6 +75,7 @@ export default class FilmsListPresenter {
   };
 
   #renderBoard = () => {
+
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
     render(this.#filmsListContainer, this.#filmsList.element);
@@ -73,7 +86,7 @@ export default class FilmsListPresenter {
     }
 
     for (let i = 0; i < Math.min(this.#moviesData.length, MOVIES_PER_PAGE); i++) {
-      this.#renderMovie(this.#moviesData[i]);
+      this.#renderFilm(this.#moviesData[i]);
     }
 
     if (this.#moviesData.length > MOVIES_PER_PAGE) {

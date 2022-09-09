@@ -1,5 +1,5 @@
 import FilterView from '../view/filter-view.js';
-import {render} from '../render';
+import {render} from '../framework/render.js';
 import {FilterType, filter} from '../filter.js';
 
 export default class FilterPresenter {
