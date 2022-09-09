@@ -1,7 +1,7 @@
-import FilmsListPresenter from './presenter/films-list-presenter.js';
-import MovieModel from './model/movies-model.js';
-import CommentsModel from './model/comments-model.js';
-import ProfilePresenter from './presenter/profile-presenter.js';
+import FilmsListPresenter from './presenter/films-list-presenter';
+import MovieModel from './model/movies-model';
+import CommentsModel from './model/comments-model';
+import ProfilePresenter from './presenter/profile-presenter';
 
 const mainContainer = document.querySelector('.main');
 const headerContainer = document.querySelector('.header');

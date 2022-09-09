@@ -1,5 +1,5 @@
-import {humanizeDate} from '../utils.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeDate} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
 
 const createCommentsListTemplate = (comments) => comments.reduce((accumulator, comment) => (`${accumulator}
           <li class="film-details__comment">

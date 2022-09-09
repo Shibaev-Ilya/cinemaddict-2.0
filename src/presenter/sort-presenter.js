@@ -1,5 +1,5 @@
-import {render} from '../framework/render.js';
-import SortView from '../view/sort-view.js';
+import {render} from '../framework/render';
+import SortView from '../view/sort-view';
 
 export default class SortPresenter {
 

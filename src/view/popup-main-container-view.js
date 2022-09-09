@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractView from '../framework/view/abstract-view';
 
 
 const createPopupMainContainerTemplate = () => ('<section class="film-details"><div class="film-details__inner"></div></section>');

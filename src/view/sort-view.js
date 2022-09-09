@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractView from '../framework/view/abstract-view';
 
 const createSortTemplate = () => (`<ul class="sort">
     <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>

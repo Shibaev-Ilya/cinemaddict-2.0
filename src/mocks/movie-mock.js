@@ -1,5 +1,5 @@
-import {FILM_AMOUNT, getId, getRandomInteger} from '../utils.js';
-import {allComments} from './comment-mocks.js';
+import {FILM_AMOUNT, getId, getRandomInteger} from '../utils';
+import {allComments} from './comment-mocks';
 
 const id = getId();
 

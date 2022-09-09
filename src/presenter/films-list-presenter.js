@@ -1,13 +1,13 @@
-import {render, remove} from '../framework/render.js';
+import {render, remove} from '../framework/render';
 import FilmsContainer from '../view/films-container-view';
 import FilmsListContainer from '../view/films-list-container-view';
 import FilmsList from '../view/films-list-view';
 import ShowMoreButton from '../view/show-more-button';
-import NoMoviesView from '../view/no-movies-view.js';
-import FilterPresenter from './filter-presenter.js';
-import SortPresenter from './sort-presenter.js';
-import FilmPresenter from './film-presenter.js';
-import {updateItem} from '../utils.js';
+import NoMoviesView from '../view/no-movies-view';
+import FilterPresenter from './filter-presenter';
+import SortPresenter from './sort-presenter';
+import FilmPresenter from './film-presenter';
+import {updateItem} from '../utils';
 
 const MOVIES_PER_PAGE = 5;
 

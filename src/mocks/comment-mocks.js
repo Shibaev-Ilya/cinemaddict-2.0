@@ -1,4 +1,4 @@
-import {getRandomInteger, FILM_AMOUNT} from '../utils.js';
+import {getRandomInteger, FILM_AMOUNT} from '../utils';
 
 const smiles = ['smile', 'sleeping', 'puke', 'angry'];
 

@@ -1,5 +1,5 @@
-import {humanizeDate, minutesToHours} from '../utils.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeDate, minutesToHours} from '../utils';
+import AbstractView from '../framework/view/abstract-view';
 
 const MAX_TEXT_LENGTH = 140;
 

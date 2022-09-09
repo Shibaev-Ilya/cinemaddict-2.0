@@ -1,4 +1,4 @@
-import {generateMovies} from '../mocks/movie-mock.js';
+import {generateMovies} from '../mocks/movie-mock';
 
 export default class MovieModel {
   #movies = generateMovies;
