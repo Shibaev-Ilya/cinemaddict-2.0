@@ -22,7 +22,7 @@ const generateMovie = () => {
     filmInfo: {
       title: 'Terminator',
       alternativeTitle: 'Country Who Stole Us',
-      totalRating: 7.8,
+      totalRating: getRandomInteger(1, 10),
       poster: `images/posters/${srcPosters[getRandomInteger(0, srcPosters.length - 1)]}`,
       ageRating: getRandomInteger(0, 18),
       director: 'James Cameron',
@@ -37,7 +37,7 @@ const generateMovie = () => {
         'Cillian Murphy'
       ],
       release: {
-        date: '2018-12-23T03:55:18.062Z',
+        date: `${getRandomInteger(1980, 2000)}-12-23T03:55:18.062Z`,
         releaseCountry: 'Spain'
       },
       runtime: getRandomInteger(63, 130),

@@ -1,22 +1,33 @@
-import {render} from '../framework/render';
+import {remove, render} from '../framework/render';
 import SortView from '../view/sort-view';
 
 export default class SortPresenter {
 
   #mainContainer = null;
   #moviesData = null;
+  #handleSortTypeChange = null;
+  #currentSortType = null;
+  #sortView = null;
 
-  constructor (mainContainer) {
+  constructor (mainContainer, handleSortTypeChange) {
     this.#mainContainer = mainContainer;
+    this.#handleSortTypeChange = handleSortTypeChange;
   }
 
   #renderSort = () => {
-    const sortView = new SortView(this.#moviesData);
-    render(sortView, this.#mainContainer);
+    this.#sortView = new SortView(this.#moviesData, this.#currentSortType);
+    this.#sortView.setClickSortHandler(this.#handleSortTypeChange);
+
+    render(this.#sortView, this.#mainContainer);
   };
 
-  init = (moviesData) => {
+  clearSort = () => {
+    remove(this.#sortView);
+  };
+
+  init = (moviesData,currentSortType) => {
     this.#moviesData = moviesData;
+    this.#currentSortType = currentSortType;
     this.#renderSort();
   };
 
