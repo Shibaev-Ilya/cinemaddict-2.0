@@ -1,6 +1,6 @@
-import FilmCardView from '../view/film-card-view.js';
-import PopupPresenter from './popup-presenter.js';
-import {render, remove} from '../framework/render.js';
+import FilmCardView from '../view/film-card-view';
+import PopupPresenter from './popup-presenter';
+import {render, remove} from '../framework/render';
 import {replace} from '../framework/render';
 
 export default class FilmPresenter {

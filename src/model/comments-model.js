@@ -1,4 +1,4 @@
-import {allComments} from '../mocks/comment-mocks.js';
+import {allComments} from '../mocks/comment-mocks';
 
 export default class CommentsModel {
 

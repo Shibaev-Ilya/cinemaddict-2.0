@@ -1,5 +1,5 @@
-import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeDate, minutesToHours} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view';
+import {humanizeDate, minutesToHours} from '../utils';
 
 const createPopupTopContainerTemplate = (movie) => {
   const {id, filmInfo} = movie;
