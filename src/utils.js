@@ -9,6 +9,26 @@ const SortType = {
   BY_RATING: 'byRating',
 };
 
+const SortTypeNames = {
+  [SortType.DEFAULT] : 'Sort by default',
+  [SortType.BY_DATE] : 'Sort by date',
+  [SortType.BY_RATING] : 'Sort by rating',
+};
+
+const FilterType = {
+  FILTER_ALL: 'all',
+  FILTER_WATCHLIST: 'watchlist',
+  FILTER_HISTORY: 'history',
+  FILTER_FAVORITES: 'favorites',
+};
+
+const filter = {
+  [FilterType.FILTER_ALL]: (movies) => movies,
+  [FilterType.FILTER_WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
+  [FilterType.FILTER_HISTORY]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
+  [FilterType.FILTER_FAVORITES]: (movies) => movies.filter((movie) => movie.userDetails.favorite),
+};
+
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
@@ -79,18 +99,4 @@ const sortRatingUp = (movieA, movieB) => {
   return 0;
 };
 
-const FilterType = {
-  FILTER_ALL: 'all',
-  FILTER_WATCHLIST: 'watchlist',
-  FILTER_HISTORY: 'history',
-  FILTER_FAVORITES: 'favorites',
-};
-
-const filter = {
-  [FilterType.FILTER_ALL]: (movies) => movies,
-  [FilterType.FILTER_WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
-  [FilterType.FILTER_HISTORY]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
-  [FilterType.FILTER_FAVORITES]: (movies) => movies.filter((movie) => movie.userDetails.favorite),
-};
-
-export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, updateItem, SortType, sortDateUp, sortRatingUp, filter, FilterType};
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, updateItem, SortType, sortDateUp, sortRatingUp, filter, FilterType, SortTypeNames};
