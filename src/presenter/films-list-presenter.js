@@ -7,7 +7,7 @@ import NoMoviesView from '../view/no-movies-view';
 import FilterPresenter from './filter-presenter';
 import SortPresenter from './sort-presenter';
 import FilmPresenter from './film-presenter';
-import {sortDateUp, SortType, updateItem, sortRatingUp} from '../utils';
+import {sortDateUp, SortType, sortRatingUp} from '../utils';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -19,8 +19,6 @@ export default class FilmsListPresenter {
   #showMoreButton = new ShowMoreButton;
   #movieModel = null;
   #commentsModel = null;
-  #moviesData = [];
-  #sourceMoviesData = [];
   #mainContainer = null;
   #filterPresenter = null;
   #sortPresenter = null;
@@ -35,8 +33,19 @@ export default class FilmsListPresenter {
     this.#commentsModel = commentsModel;
   }
 
+  get movies() {
+    switch ( this.#currentSortType) {
+      case SortType.BY_DATE:
+        return [... this.#movieModel.movies].sort(sortDateUp);
+      case SortType.BY_RATING:
+        return [... this.#movieModel.movies].sort(sortRatingUp);
+      default:
+        return [... this.#movieModel.movies];
+    }
+  }
+
   #handleFilmChange = (updatedMovie) => {
-    this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    // Здесь будем вызывать обновление модели
     this.#filmPresenters.get(updatedMovie.id).init(updatedMovie, this.#commentsModel);
   };
 
@@ -54,38 +63,32 @@ export default class FilmsListPresenter {
     remove(this.#showMoreButton);
   };
 
+  #renderMovies = (movies) => {
+    movies.forEach( (movie) => this.#renderFilm(movie) );
+  };
+
   #onShowMoreButtonClick = () => {
 
-    this.#moviesData
-      .slice(this.#renderedMoviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE)
-      .forEach( (movie) => this.#renderFilm(movie) );
+    const moviesCount = this.movies.length;
+    const newRenderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount + MOVIES_PER_PAGE);
+    const movies = this.movies.slice(this.#renderedMoviesCount, newRenderedMoviesCount);
 
-    this.#renderedMoviesCount += MOVIES_PER_PAGE;
+    this.#renderMovies(movies);
 
-    if (this.#renderedMoviesCount >= this.#moviesData.length) {
+    this.#renderedMoviesCount = newRenderedMoviesCount;
+
+    if (this.#renderedMoviesCount >= moviesCount) {
       this.#showMoreButton.element.remove();
       this.#showMoreButton.removeElement();
     }
   };
 
-  #sortMovies = (sortType) => {
-
-    switch (sortType) {
-      case SortType.BY_DATE:
-        this.#moviesData.sort(sortDateUp);
-        break;
-      case SortType.BY_RATING:
-        this.#moviesData.sort(sortRatingUp);
-        break;
-      default:
-        this.#moviesData = [... this.#sourceMoviesData];
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
     }
 
     this.#currentSortType = sortType;
-  };
-
-  #handleSortTypeChange = (sortType) => {
-    this.#sortMovies(sortType);
 
     this.#clearFilmsList();
     this.#sortPresenter.clearSort();
@@ -96,38 +99,37 @@ export default class FilmsListPresenter {
 
   #renderFilters = () => {
     this.#filterPresenter = new FilterPresenter(this.#mainContainer);
-    this.#filterPresenter.init(this.#moviesData);
+    this.#filterPresenter.init(this.movies);
   };
 
   #renderSort = () => {
     this.#sortPresenter = new SortPresenter(this.#mainContainer, this.#handleSortTypeChange);
-    this.#sortPresenter.init(this.#moviesData, this.#currentSortType);
+    this.#sortPresenter.init(this.movies, this.#currentSortType);
   };
 
   #renderBoard = () => {
+
+    const moviesCount = this.movies.length;
+    const movies = this.movies.slice(0, Math.min(moviesCount, MOVIES_PER_PAGE));
 
     render(this.#filmsContainer, this.#mainContainer);
     render(this.#filmsList, this.#filmsContainer.element);
     render(this.#filmsListContainer, this.#filmsList.element);
 
-    if (this.#moviesData.length === 0) {
+    if (this.movies.length === 0) {
       render(this.#noMoviesView, this.#filmsListContainer.element);
       return;
     }
 
-    for (let i = 0; i < Math.min(this.#moviesData.length, MOVIES_PER_PAGE); i++) {
-      this.#renderFilm(this.#moviesData[i]);
-    }
+    this.#renderMovies(movies);
 
-    if (this.#moviesData.length > MOVIES_PER_PAGE) {
+    if (moviesCount > MOVIES_PER_PAGE) {
       render(this.#showMoreButton, this.#filmsList.element);
       this.#showMoreButton.setClickHandler(this.#onShowMoreButtonClick);
     }
   };
 
   init = () => {
-    this.#moviesData = [...this.#movieModel.movies];
-    this.#sourceMoviesData = [...this.#movieModel.movies];
     this.#renderFilters();
     this.#renderSort();
     this.#renderBoard();
