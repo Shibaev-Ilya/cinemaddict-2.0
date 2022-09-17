@@ -2,16 +2,16 @@ import FilmCardView from '../view/film-card-view';
 import PopupPresenter from './popup-presenter';
 import {render, remove} from '../framework/render';
 import {replace} from '../framework/render';
+import {UserAction, UpdateType} from '../utils';
 
 export default class FilmPresenter {
 
-  #commentsModel = null;
+  #comments = null;
   #filmsListContainer = null;
   #movie = null;
   #movieComponent = null;
   #changeData = null;
   #popupPresenter = null;
-  #movieComments = null;
 
   constructor (filmsListContainer, changeData) {
     this.#filmsListContainer = filmsListContainer;
@@ -19,27 +19,38 @@ export default class FilmPresenter {
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} });
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+    );
   };
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} });
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      { ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} }
+    );
   };
 
   #handleFavoriteWatchedClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} });
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} }
+    );
   };
 
   #handlerCardClick = () => {
-    this.#movieComments = this.#commentsModel.getComments(this.#movie.id);
     this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick);
-    this.#popupPresenter.openPopup(this.#movie, this.#movieComments);
+    this.#popupPresenter.openPopup(this.#movie, this.#comments);
   };
 
 
-  init = (movie, commentsModel) => {
+  init = (movie, comments) => {
     this.#movie = movie;
-    this.#commentsModel = commentsModel;
+    this.#comments = comments;
 
     const prevMovieComponent = this.#movieComponent;
 
@@ -51,7 +62,7 @@ export default class FilmPresenter {
     this.#movieComponent.setClickCardHandler(this.#handlerCardClick);
 
     if (this.#popupPresenter !== null && this.#popupPresenter.isRendered) {
-      this.#popupPresenter.init(this.#movie, this.#movieComments);
+      this.#popupPresenter.init(this.#movie, this.#comments);
     }
 
     if (prevMovieComponent === null ) {

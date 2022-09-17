@@ -1,10 +1,11 @@
 import FilterView from '../view/filter-view';
-import {render} from '../framework/render';
+import {remove, render} from '../framework/render';
 import {FilterType, filter} from '../filter';
 
 export default class FilterPresenter {
   #mainContainer = null;
   #moviesData = null;
+  #filterView = null;
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -39,8 +40,12 @@ export default class FilterPresenter {
   }
 
   #renderFilter = () => {
-    const filterView = new FilterView(this.filters);
-    render(filterView, this.#mainContainer);
+    this.#filterView = new FilterView(this.filters);
+    render(this.#filterView, this.#mainContainer);
+  };
+
+  clearFilter = () => {
+    remove(this.#filterView);
   };
 
   init = (moviesData) => {
