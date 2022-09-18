@@ -8,7 +8,7 @@ export default class CommentsModel extends Observable {
   getComments = (filmId) => this.#comments[filmId];
 
   addComment = (updateType, update) => {
-
+    this.#comments[update.movie.id] = update.newComments;
     this._notify(updateType, update);
   };
 

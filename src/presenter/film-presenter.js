@@ -44,7 +44,7 @@ export default class FilmPresenter {
 
   #handleDeleteClick = (commentId) => {
     this.#changeData(
-      UserAction.DELETE_COMMENT,
+      UserAction.ADD_COMMENT,
       UpdateType.PATCH,
       {
         newComments: this.#comments.filter( (comment) => comment.id !== commentId),
@@ -53,8 +53,26 @@ export default class FilmPresenter {
     );
   };
 
+  #handleAddCommentKeydown = (newComment) => {
+    this.#comments.push(newComment);
+    const newCommentsData =  this.#comments;
+
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      {
+        newComments: newCommentsData,
+        movie: {...this.#movie, comments: newCommentsData.map( (element) => element.id)},
+      }
+    );
+  };
+
   #handlerCardClick = () => {
-    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick, this.#handleDeleteClick);
+    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick,
+      this.#handleAlreadyWatchedClick,
+      this.#handleFavoriteWatchedClick,
+      this.#handleDeleteClick,
+      this.#handleAddCommentKeydown);
     this.#popupPresenter.openPopup(this.#movie, this.#comments);
   };
 

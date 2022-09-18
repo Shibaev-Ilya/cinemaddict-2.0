@@ -17,13 +17,15 @@ export default class PopupPresenter {
   #handleAlreadyWatchedClick = null;
   #handleFavoriteWatchedClick = null;
   #handleDeleteClick = null;
+  #handleAddCommentKeydown = null;
   isRendered = false;
 
-  constructor(handleWatchlistClick, handleAlreadyWatchedClick, handleFavoriteWatchedClick, handleDeleteClick) {
+  constructor(handleWatchlistClick, handleAlreadyWatchedClick, handleFavoriteWatchedClick, handleDeleteClick, handleAddCommentKeydown) {
     this.#handleWatchlistClick = handleWatchlistClick;
     this.#handleAlreadyWatchedClick = handleAlreadyWatchedClick;
     this.#handleFavoriteWatchedClick = handleFavoriteWatchedClick;
     this.#handleDeleteClick = handleDeleteClick;
+    this.#handleAddCommentKeydown = handleAddCommentKeydown;
   }
 
   #renderPopup = () => {
@@ -81,6 +83,7 @@ export default class PopupPresenter {
     this.#popupControlsView.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
 
     this.#popupCommentsContainerView.setDeleteCommentHandler(this.#handleDeleteClick);
+    this.#popupCommentsContainerView.setAddCommentHandlers(this.#handleAddCommentKeydown);
 
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');

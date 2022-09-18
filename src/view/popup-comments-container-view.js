@@ -1,5 +1,6 @@
 import {humanizeDate} from '../utils';
 import AbstractView from '../framework/view/abstract-view';
+import { nanoid } from 'nanoid'
 
 const createCommentsListTemplate = (comments) => comments.reduce((accumulator, comment) => (`${accumulator} <li class="film-details__comment">
             <span class="film-details__comment-emoji">
@@ -62,19 +63,19 @@ const createPopupCommentsContainerTemplate = (comments) => (`
 export default class PopupCommentsContainerView extends AbstractView {
   #comments = null;
   #newComment = null;
-  #emojiValue = null;
+  #emojiValue = 'smile';
 
   constructor(comments) {
     super();
     this.#comments = comments;
-    this.setAddCommentHandlers();
   }
 
   get template() {
     return createPopupCommentsContainerTemplate(this.#comments);
   }
 
-  setAddCommentHandlers = () => {
+  setAddCommentHandlers = (callback) => {
+    this._callback.addComment = callback;
     this.element.querySelector('.js-emoji-list').addEventListener('click', this.#onEmojiClick);
     this.element.querySelector('.js-add-comment').addEventListener('keydown', this.#onCommentKeydown);
   };
@@ -115,6 +116,12 @@ export default class PopupCommentsContainerView extends AbstractView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       this.#newComment = evt.target.value;
+      let newComment = {
+        "id": nanoid(3),
+        "comment": this.#newComment,
+        "emotion": this.#emojiValue
+      };
+      this._callback.addComment(newComment);
     }
   };
 

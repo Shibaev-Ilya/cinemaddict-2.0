@@ -61,6 +61,7 @@ export default class FilmsListPresenter {
         this.#movieModel.updateMovie(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this.#movieModel.updateMovie(updateType, update.movie);
         this.#commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
