@@ -47,9 +47,9 @@ export default class FilmsListPresenter {
 
     switch ( this.#currentSortType) {
       case SortType.BY_DATE:
-        return filteredMovies.sort(sortDateUp);
+        return filteredMovies.slice().sort(sortDateUp);
       case SortType.BY_RATING:
-        return filteredMovies.sort(sortRatingUp);
+        return filteredMovies.slice().sort(sortRatingUp);
       default:
         return filteredMovies;
     }
@@ -64,6 +64,7 @@ export default class FilmsListPresenter {
         this.#commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#movieModel.updateMovie(updateType, update.movie);
         this.#commentsModel.deleteComment(updateType, update);
         break;
     }
@@ -95,8 +96,8 @@ export default class FilmsListPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard();
-        this.#renderBoard({resetRenderedMoviesCount: true, resetSortType: true});
+        this.#clearBoard({resetRenderedMoviesCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
