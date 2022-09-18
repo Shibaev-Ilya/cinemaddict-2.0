@@ -24,7 +24,7 @@ export default class FilmsListPresenter {
   #mainContainer = null;
   #filterPresenter = null;
   #sortPresenter = null;
-  #noMoviesView = new NoMoviesView;
+  #noMoviesView = null;
   #renderedMoviesCount = MOVIES_PER_PAGE;
   #filmPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
@@ -150,6 +150,7 @@ export default class FilmsListPresenter {
   };
 
   #renderNoMovies = () => {
+    this.#noMoviesView = new NoMoviesView(this.#filterModel.filter);
     render(this.#noMoviesView, this.#filmsListContainer.element);
   };
 
@@ -167,7 +168,9 @@ export default class FilmsListPresenter {
     this.#filterPresenter.clearFilter();
     this.#sortPresenter.clearSort();
 
-    remove(this.#noMoviesView);
+    if (this.#noMoviesView) {
+      remove(this.#noMoviesView);
+    }
     remove(this.#showMoreButton);
 
     if (resetRenderedMoviesCount) {
