@@ -12,7 +12,7 @@ const createCommentsListTemplate = (comments) => comments.reduce((accumulator, c
                 <span class="film-details__comment-day">
                 ${humanizeDate(comment.date, 'YYYY/MM/DD HH:mm')}
                 </span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete js-delete-comment" data-comment-id="${comment.id}">Delete</button>
               </p>
             </div>
           </li>`), '');
@@ -51,7 +51,7 @@ const createPopupCommentsContainerTemplate = (comments) => (`
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-        <ul class="film-details__comments-list">
+        <ul class="film-details__comments-list js-comments-list">
             ${createCommentsListTemplate(comments)}
         </ul>
             ${createFormTemplate()}
@@ -77,6 +77,20 @@ export default class PopupCommentsContainerView extends AbstractView {
   setAddCommentHandlers = () => {
     this.element.querySelector('.js-emoji-list').addEventListener('click', this.#onEmojiClick);
     this.element.querySelector('.js-add-comment').addEventListener('keydown', this.#onCommentKeydown);
+  };
+
+  setDeleteCommentHandler = (callback) => {
+    this._callback.deleteComment = callback;
+    this.element.querySelector('.js-comments-list').addEventListener('click', this.#onDeleteClick);
+  };
+
+  #onDeleteClick = (evt) => {
+    if (!evt.target.classList.contains('js-delete-comment')) {
+      return;
+    }
+    evt.preventDefault();
+    const commentId = evt.target.dataset.commentId;
+    this._callback.deleteComment(commentId);
   };
 
   #onEmojiClick = (evt) => {

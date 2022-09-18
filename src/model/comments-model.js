@@ -13,7 +13,7 @@ export default class CommentsModel extends Observable {
   };
 
   deleteComment = (updateType, update) => {
-
+    this.#comments[update.movie.id] = update.newComments;
     this._notify(updateType, update);
   };
 

@@ -3,7 +3,7 @@ import {getRandomInteger, FILM_AMOUNT} from '../utils';
 const smiles = ['smile', 'sleeping', 'puke', 'angry'];
 
 const makeComment = () => ({
-  id: String(getRandomInteger(500, 520)),
+  id: String(getRandomInteger(99, 999)),
   author: 'Marina Walker',
   emotion: smiles[getRandomInteger(0, smiles.length - 1)],
   comment: 'love all Leo Di Caprio performances. He\'s not in the movie tho. Just telling what kinds of movies I like.',

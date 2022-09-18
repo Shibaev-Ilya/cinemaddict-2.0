@@ -33,6 +33,7 @@ export default class FilmsListPresenter {
     this.#commentsModel = commentsModel;
 
     this.#movieModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleCommentModelEvent);
   }
 
   get movies() {
@@ -64,6 +65,22 @@ export default class FilmsListPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#filmPresenters.get(data.id).init(data, this.#commentsModel.getComments(data.id));
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard();
+        this.#renderBoard({resetRenderedMoviesCount: true, resetSortType: true});
+        break;
+    }
+  };
+
+  #handleCommentModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#filmPresenters.get(data.movie.id).init(data.movie, data.newComments);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();

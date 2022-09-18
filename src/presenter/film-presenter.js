@@ -42,8 +42,20 @@ export default class FilmPresenter {
     );
   };
 
+  #handleDeleteClick = (commentId) => {
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      {
+        movie: this.#movie,
+        newComments: this.#comments.filter( (comment) => comment.id !== commentId),
+
+      }
+    );
+  };
+
   #handlerCardClick = () => {
-    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick);
+    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick, this.#handleDeleteClick);
     this.#popupPresenter.openPopup(this.#movie, this.#comments);
   };
 

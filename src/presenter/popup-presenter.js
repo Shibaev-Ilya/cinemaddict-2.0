@@ -16,12 +16,14 @@ export default class PopupPresenter {
   #handleWatchlistClick = null;
   #handleAlreadyWatchedClick = null;
   #handleFavoriteWatchedClick = null;
+  #handleDeleteClick = null;
   isRendered = false;
 
-  constructor(handleWatchlistClick, handleAlreadyWatchedClick, handleFavoriteWatchedClick) {
+  constructor(handleWatchlistClick, handleAlreadyWatchedClick, handleFavoriteWatchedClick, handleDeleteClick) {
     this.#handleWatchlistClick = handleWatchlistClick;
     this.#handleAlreadyWatchedClick = handleAlreadyWatchedClick;
     this.#handleFavoriteWatchedClick = handleFavoriteWatchedClick;
+    this.#handleDeleteClick = handleDeleteClick;
   }
 
   #renderPopup = () => {
@@ -62,8 +64,8 @@ export default class PopupPresenter {
   };
 
   init = (movie, comments) => {
-
     const prevPopupControlsComponent = this.#popupControlsView;
+    const prevPopupCommentsComponent = this.#popupCommentsContainerView;
 
     this.#movie = movie;
     this.#comments = comments;
@@ -78,16 +80,16 @@ export default class PopupPresenter {
     this.#popupControlsView.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
     this.#popupControlsView.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
 
+    this.#popupCommentsContainerView.setDeleteCommentHandler(this.#handleDeleteClick);
+
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
 
-    if (prevPopupControlsComponent === null ) {
-      return;
-    }
-
     if (this.isRendered) {
       replace(this.#popupControlsView, prevPopupControlsComponent);
+      replace(this.#popupCommentsContainerView, prevPopupCommentsComponent);
       remove(prevPopupControlsComponent);
+      remove(prevPopupCommentsComponent);
     }
 
   };
