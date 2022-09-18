@@ -8,6 +8,7 @@ import FilterPresenter from './filter-presenter';
 import SortPresenter from './sort-presenter';
 import FilmPresenter from './film-presenter';
 import {sortDateUp, SortType, sortRatingUp, UpdateType, UserAction} from '../utils';
+import {filter} from '../filter';
 
 const MOVIES_PER_PAGE = 5;
 
@@ -19,6 +20,7 @@ export default class FilmsListPresenter {
   #showMoreButton = new ShowMoreButton;
   #movieModel = null;
   #commentsModel = null;
+  #filterModel = null;
   #mainContainer = null;
   #filterPresenter = null;
   #sortPresenter = null;
@@ -27,23 +29,29 @@ export default class FilmsListPresenter {
   #filmPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
-  constructor (mainContainer, movieModel, commentsModel) {
+  constructor (mainContainer, movieModel, commentsModel, filterModel) {
     this.#mainContainer = mainContainer;
     this.#movieModel = movieModel;
     this.#commentsModel = commentsModel;
+    this.#filterModel = filterModel;
 
     this.#movieModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleCommentModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get movies() {
+    const filterType = this.#filterModel.filter;
+    const movies = this.#movieModel.movies;
+    const filteredMovies = filter[filterType](movies);
+
     switch ( this.#currentSortType) {
       case SortType.BY_DATE:
-        return [... this.#movieModel.movies].sort(sortDateUp);
+        return filteredMovies.sort(sortDateUp);
       case SortType.BY_RATING:
-        return [... this.#movieModel.movies].sort(sortRatingUp);
+        return filteredMovies.sort(sortRatingUp);
       default:
-        return [... this.#movieModel.movies];
+        return filteredMovies;
     }
   }
 
@@ -71,8 +79,8 @@ export default class FilmsListPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard();
-        this.#renderBoard({resetRenderedMoviesCount: true, resetSortType: true});
+        this.#clearBoard({resetRenderedMoviesCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
@@ -136,8 +144,8 @@ export default class FilmsListPresenter {
   };
 
   #renderFilters = () => {
-    this.#filterPresenter = new FilterPresenter(this.#mainContainer);
-    this.#filterPresenter.init(this.movies);
+    this.#filterPresenter = new FilterPresenter(this.#mainContainer, this.#filterModel, this.#movieModel);
+    this.#filterPresenter.init();
   };
 
   #renderNoMovies = () => {
