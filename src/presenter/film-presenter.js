@@ -55,7 +55,7 @@ export default class FilmPresenter {
 
   #handleAddCommentKeydown = (newComment) => {
     this.#comments.push(newComment);
-    const newCommentsData =  this.#comments;
+    const newCommentsData = this.#comments;
 
     this.#changeData(
       UserAction.DELETE_COMMENT,

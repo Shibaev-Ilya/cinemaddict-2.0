@@ -1,7 +1,7 @@
 import {humanizeDate} from '../utils';
 import AbstractView from '../framework/view/abstract-view';
-import { nanoid } from 'nanoid'
-import he from 'he'
+import { nanoid } from 'nanoid';
+import he from 'he';
 
 const createCommentsListTemplate = (comments) => comments.reduce((accumulator, comment) => (`${accumulator} <li class="film-details__comment">
             <span class="film-details__comment-emoji">
@@ -117,10 +117,10 @@ export default class PopupCommentsContainerView extends AbstractView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       this.#newComment = evt.target.value;
-      let newComment = {
-        "id": nanoid(3),
-        "comment": this.#newComment,
-        "emotion": this.#emojiValue
+      const newComment = {
+        'id': nanoid(3),
+        'comment': this.#newComment,
+        'emotion': this.#emojiValue
       };
       this._callback.addComment(newComment);
     }
