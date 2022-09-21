@@ -4,7 +4,7 @@ const createNewFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
   return (`
     <a href="#"
-    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    class="js-filter-button main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
     data-filter-type="${type}">
     ${name}
     ${type !== 'all' ? `<span class="main-navigation__item-count">${ count }</span>` : ''}
@@ -42,7 +42,8 @@ export default class FilterView extends AbstractView {
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.filterType);
+    if (evt.target.closest('.js-filter-button') === null ) { return; }
+    this._callback.filterTypeChange(evt.target.closest('.js-filter-button').dataset.filterType);
   };
 
 }
