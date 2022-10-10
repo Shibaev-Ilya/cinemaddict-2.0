@@ -3,6 +3,7 @@ import PopupPresenter from './popup-presenter';
 import {render, remove} from '../framework/render';
 import {replace} from '../framework/render';
 import {UserAction, UpdateType} from '../utils';
+import {FilterType} from '../filter';
 
 export default class FilmPresenter {
 
@@ -12,13 +13,24 @@ export default class FilmPresenter {
   #movieComponent = null;
   #changeData = null;
   #popupPresenter = null;
+  #filterModel = null;
 
-  constructor (filmsListContainer, changeData) {
+  constructor (filmsListContainer, changeData, filterModel) {
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
+    this.#filterModel = filterModel;
   }
 
   #handleWatchlistClick = () => {
+    console.log(this.#filterModel.filter);
+    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
+      this.#changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+      );
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
@@ -27,6 +39,14 @@ export default class FilmPresenter {
   };
 
   #handleAlreadyWatchedClick = () => {
+    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
+      this.#changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+      );
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
@@ -35,6 +55,14 @@ export default class FilmPresenter {
   };
 
   #handleFavoriteWatchedClick = () => {
+    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
+      this.#changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+      );
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
