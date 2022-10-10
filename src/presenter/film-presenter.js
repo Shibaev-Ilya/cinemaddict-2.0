@@ -22,7 +22,6 @@ export default class FilmPresenter {
   }
 
   #handleWatchlistClick = () => {
-    console.log(this.#filterModel.filter);
     if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
