@@ -42,7 +42,7 @@ export default class FilmPresenter {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
         UpdateType.MINOR,
-        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+        { ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} }
       );
       return;
     }
@@ -58,7 +58,7 @@ export default class FilmPresenter {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
         UpdateType.MINOR,
-        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+        { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} }
       );
       return;
     }
