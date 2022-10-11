@@ -3,6 +3,18 @@ import dayjs from 'dayjs';
 const FILM_AMOUNT = 14;
 const HOUR = 60;
 
+const UserAction = {
+  UPDATE_MOVIE: 'UPDATE_MOVIE',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 const SortType = {
   DEFAULT: 'default',
   BY_DATE: 'byDate',
@@ -13,20 +25,6 @@ const SortTypeNames = {
   [SortType.DEFAULT] : 'Sort by default',
   [SortType.BY_DATE] : 'Sort by date',
   [SortType.BY_RATING] : 'Sort by rating',
-};
-
-const FilterType = {
-  FILTER_ALL: 'all',
-  FILTER_WATCHLIST: 'watchlist',
-  FILTER_HISTORY: 'history',
-  FILTER_FAVORITES: 'favorites',
-};
-
-const filter = {
-  [FilterType.FILTER_ALL]: (movies) => movies,
-  [FilterType.FILTER_WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
-  [FilterType.FILTER_HISTORY]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
-  [FilterType.FILTER_FAVORITES]: (movies) => movies.filter((movie) => movie.userDetails.favorite),
 };
 
 // Функция из интернета по генерации случайного числа из диапазона
@@ -53,20 +51,6 @@ const minutesToHours = (totalMinutes) => {
   const hours = Math.floor(totalMinutes / HOUR);
 
   return minutes !== 0 ? `${hours}h ${minutes}m` : `${hours}h`;
-};
-
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
 };
 
 // Функция возвращает нужный вес для колбэка sort
@@ -99,4 +83,4 @@ const sortRatingUp = (movieA, movieB) => {
   return 0;
 };
 
-export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, updateItem, SortType, sortDateUp, sortRatingUp, filter, FilterType, SortTypeNames};
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, SortType, sortDateUp, sortRatingUp, SortTypeNames, UpdateType, UserAction};

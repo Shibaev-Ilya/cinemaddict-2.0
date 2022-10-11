@@ -1,8 +1,20 @@
 import {allComments} from '../mocks/comment-mocks';
+import Observable from '../framework/observable';
 
-export default class CommentsModel {
+export default class CommentsModel extends Observable {
 
   #comments = allComments;
 
   getComments = (filmId) => this.#comments[filmId];
+
+  addComment = (updateType, update) => {
+    this.#comments[update.movie.id] = update.newComments;
+    this._notify(updateType, update);
+  };
+
+  deleteComment = (updateType, update) => {
+    this.#comments[update.movie.id] = update.newComments;
+    this._notify(updateType, update);
+  };
+
 }

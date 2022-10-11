@@ -1,60 +1,71 @@
 import FilmCardView from '../view/film-card-view';
-import PopupPresenter from './popup-presenter';
 import {render, remove} from '../framework/render';
 import {replace} from '../framework/render';
+import {UserAction, UpdateType} from '../utils';
+import {FilterType} from '../filter';
 
 export default class FilmPresenter {
 
-  #commentsModel = null;
+  #comments = null;
   #filmsListContainer = null;
   #movie = null;
   #movieComponent = null;
   #changeData = null;
   #popupPresenter = null;
-  #movieComments = null;
+  #filterModel = null;
 
-  constructor (filmsListContainer, changeData) {
+  constructor(filmsListContainer, changeData, filterModel, popupPresenter) {
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
+    this.#filterModel = filterModel;
+    this.#popupPresenter = popupPresenter;
   }
 
-  #handleWatchlistClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} });
+  #handleFilmWatchlistClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}}
+    );
   };
 
-  #handleAlreadyWatchedClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} });
+  #handleFilmAlreadyWatchedClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {
+        ...this.#movie,
+        userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}
+      }
+    );
   };
 
-  #handleFavoriteWatchedClick = () => {
-    this.#changeData({ ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} });
+  #handleFilmFavoriteWatchedClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}}
+    );
   };
 
   #handlerCardClick = () => {
-    this.#movieComments = this.#commentsModel.getComments(this.#movie.id);
-    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick, this.#handleAlreadyWatchedClick, this.#handleFavoriteWatchedClick);
-    this.#popupPresenter.openPopup(this.#movie, this.#movieComments);
+    this.#popupPresenter.init(this.#movie, this.#comments);
   };
 
-
-  init = (movie, commentsModel) => {
+  init = (movie, comments) => {
     this.#movie = movie;
-    this.#commentsModel = commentsModel;
+    this.#comments = comments;
 
     const prevMovieComponent = this.#movieComponent;
 
     this.#movieComponent = new FilmCardView(this.#movie);
 
-    this.#movieComponent.setClickWatchlistHandler(this.#handleWatchlistClick);
-    this.#movieComponent.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
-    this.#movieComponent.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
+    this.#movieComponent.setClickWatchlistHandler(this.#handleFilmWatchlistClick);
+    this.#movieComponent.setClickAlreadyWatchedHandler(this.#handleFilmAlreadyWatchedClick);
+    this.#movieComponent.setClickFavoriteHandler(this.#handleFilmFavoriteWatchedClick);
     this.#movieComponent.setClickCardHandler(this.#handlerCardClick);
 
-    if (this.#popupPresenter !== null && this.#popupPresenter.isRendered) {
-      this.#popupPresenter.init(this.#movie, this.#movieComments);
-    }
-
-    if (prevMovieComponent === null ) {
+    if (prevMovieComponent === null) {
       render(this.#movieComponent, this.#filmsListContainer);
       return;
     }
