@@ -1,5 +1,4 @@
 import FilmCardView from '../view/film-card-view';
-import PopupPresenter from './popup-presenter';
 import {render, remove} from '../framework/render';
 import {replace} from '../framework/render';
 import {UserAction, UpdateType} from '../utils';
@@ -15,13 +14,14 @@ export default class FilmPresenter {
   #popupPresenter = null;
   #filterModel = null;
 
-  constructor (filmsListContainer, changeData, filterModel) {
+  constructor (filmsListContainer, changeData, filterModel, popupPresenter) {
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
     this.#filterModel = filterModel;
+    this.#popupPresenter = popupPresenter;
   }
 
-  #handleWatchlistClick = () => {
+  #handleFilmWatchlistClick = () => {
     if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
@@ -37,7 +37,7 @@ export default class FilmPresenter {
     );
   };
 
-  #handleAlreadyWatchedClick = () => {
+  #handleFilmAlreadyWatchedClick = () => {
     if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
@@ -53,7 +53,7 @@ export default class FilmPresenter {
     );
   };
 
-  #handleFavoriteWatchedClick = () => {
+  #handleFilmFavoriteWatchedClick = () => {
     if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
       this.#changeData(
         UserAction.UPDATE_MOVIE,
@@ -69,40 +69,9 @@ export default class FilmPresenter {
     );
   };
 
-  #handleDeleteClick = (commentId) => {
-    this.#changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
-      {
-        newComments: this.#comments.filter( (comment) => comment.id !== commentId),
-        movie: {...this.#movie, comments:this.#comments.filter( (comment) => comment.id !== commentId).map( (element) => element.id)},
-      }
-    );
-  };
-
-  #handleAddCommentKeydown = (newComment) => {
-    this.#comments.push(newComment);
-    const newCommentsData = this.#comments;
-
-    this.#changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      {
-        newComments: newCommentsData,
-        movie: {...this.#movie, comments: newCommentsData.map( (element) => element.id)},
-      }
-    );
-  };
-
   #handlerCardClick = () => {
-    this.#popupPresenter = new PopupPresenter(this.#handleWatchlistClick,
-      this.#handleAlreadyWatchedClick,
-      this.#handleFavoriteWatchedClick,
-      this.#handleDeleteClick,
-      this.#handleAddCommentKeydown);
-    this.#popupPresenter.openPopup(this.#movie, this.#comments);
+    this.#popupPresenter.init(this.#movie, this.#comments);
   };
-
 
   init = (movie, comments) => {
     this.#movie = movie;
@@ -112,14 +81,10 @@ export default class FilmPresenter {
 
     this.#movieComponent = new FilmCardView(this.#movie);
 
-    this.#movieComponent.setClickWatchlistHandler(this.#handleWatchlistClick);
-    this.#movieComponent.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
-    this.#movieComponent.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
+    this.#movieComponent.setClickWatchlistHandler(this.#handleFilmWatchlistClick);
+    this.#movieComponent.setClickAlreadyWatchedHandler(this.#handleFilmAlreadyWatchedClick);
+    this.#movieComponent.setClickFavoriteHandler(this.#handleFilmFavoriteWatchedClick);
     this.#movieComponent.setClickCardHandler(this.#handlerCardClick);
-
-    if (this.#popupPresenter !== null && this.#popupPresenter.isRendered) {
-      this.#popupPresenter.init(this.#movie, this.#comments);
-    }
 
     if (prevMovieComponent === null ) {
       render(this.#movieComponent, this.#filmsListContainer);

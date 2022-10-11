@@ -9,6 +9,7 @@ import SortPresenter from './sort-presenter';
 import FilmPresenter from './film-presenter';
 import {sortDateUp, SortType, sortRatingUp, UpdateType, UserAction} from '../utils';
 import {filter} from '../filter';
+import PopupPresenter from "./popup-presenter";
 
 const MOVIES_PER_PAGE = 5;
 
@@ -25,6 +26,7 @@ export default class FilmsListPresenter {
   #filterPresenter = null;
   #sortPresenter = null;
   #noMoviesView = null;
+  #popupPresenter = null;
   #renderedMoviesCount = MOVIES_PER_PAGE;
   #filmPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
@@ -36,8 +38,9 @@ export default class FilmsListPresenter {
     this.#filterModel = filterModel;
 
     this.#movieModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleCommentModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#popupPresenter = new PopupPresenter(this.#movieModel, this.#commentsModel, this.#filterModel);
   }
 
   get movies() {
@@ -60,37 +63,15 @@ export default class FilmsListPresenter {
       case UserAction.UPDATE_MOVIE:
         this.#movieModel.updateMovie(updateType, update);
         break;
-      case UserAction.ADD_COMMENT:
-        this.#movieModel.updateMovie(updateType, update.movie);
-        this.#commentsModel.addComment(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this.#movieModel.updateMovie(updateType, update.movie);
-        this.#commentsModel.deleteComment(updateType, update);
-        break;
     }
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#filmPresenters.get(data.id).init(data, this.#commentsModel.getComments(data.id));
-        break;
-      case UpdateType.MINOR:
-        this.#clearBoard();
-        this.#renderBoard();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearBoard({resetRenderedMoviesCount: true, resetSortType: true});
-        this.#renderBoard();
-        break;
-    }
-  };
-
-  #handleCommentModelEvent = (updateType, data) => {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this.#filmPresenters.get(data.movie.id).init(data.movie, data.newComments);
+        if (this.#filmPresenters.get(data.id) !== undefined) {
+          this.#filmPresenters.get(data.id).init(data, this.#commentsModel.getComments(data.id));
+        }
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -104,7 +85,7 @@ export default class FilmsListPresenter {
   };
 
   #renderFilm = (movie) => {
-    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element, this.#handleViewAction, this.#filterModel);
+    const filmPresenter = new FilmPresenter(this.#filmsListContainer.element, this.#handleViewAction, this.#filterModel, this.#popupPresenter);
     this.#filmPresenters.set(movie.id, filmPresenter);
 
     filmPresenter.init(movie, this.#commentsModel.getComments(movie.id));
