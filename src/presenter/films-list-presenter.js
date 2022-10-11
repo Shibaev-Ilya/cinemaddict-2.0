@@ -9,7 +9,7 @@ import SortPresenter from './sort-presenter';
 import FilmPresenter from './film-presenter';
 import {sortDateUp, SortType, sortRatingUp, UpdateType, UserAction} from '../utils';
 import {filter} from '../filter';
-import PopupPresenter from "./popup-presenter";
+import PopupPresenter from './popup-presenter';
 
 const MOVIES_PER_PAGE = 5;
 
