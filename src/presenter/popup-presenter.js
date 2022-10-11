@@ -45,15 +45,13 @@ export default class PopupPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    const popup = document.querySelector('.film-details');
-    if (popup !== null) {
+    if (document.querySelector('.film-details')) {
       this.init(data, this.#commentsModel.getComments(data.id));
     }
   };
 
   #handleCommentModelEvent = (updateType, data) => {
-    const popup = document.querySelector('.film-details');
-    if (popup !== null) {
+    if (document.querySelector('.film-details')) {
       this.init(data.movie, this.#commentsModel.getComments(data.movie.id));
     }
   };
