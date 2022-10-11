@@ -14,7 +14,7 @@ export default class FilmPresenter {
   #popupPresenter = null;
   #filterModel = null;
 
-  constructor (filmsListContainer, changeData, filterModel, popupPresenter) {
+  constructor(filmsListContainer, changeData, filterModel, popupPresenter) {
     this.#filmsListContainer = filmsListContainer;
     this.#changeData = changeData;
     this.#filterModel = filterModel;
@@ -22,50 +22,29 @@ export default class FilmPresenter {
   }
 
   #handleFilmWatchlistClick = () => {
-    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
-      this.#changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MINOR,
-        { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
-      );
-      return;
-    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist} }
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}}
     );
   };
 
   #handleFilmAlreadyWatchedClick = () => {
-    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
-      this.#changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MINOR,
-        { ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} }
-      );
-      return;
-    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched} }
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {
+        ...this.#movie,
+        userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}
+      }
     );
   };
 
   #handleFilmFavoriteWatchedClick = () => {
-    if (this.#filterModel.filter !== FilterType.FILTER_ALL) {
-      this.#changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MINOR,
-        { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} }
-      );
-      return;
-    }
     this.#changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
-      { ...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite} }
+      (this.#filterModel.filter !== FilterType.FILTER_ALL ? UpdateType.MINOR : UpdateType.PATCH),
+      {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}}
     );
   };
 
@@ -86,7 +65,7 @@ export default class FilmPresenter {
     this.#movieComponent.setClickFavoriteHandler(this.#handleFilmFavoriteWatchedClick);
     this.#movieComponent.setClickCardHandler(this.#handlerCardClick);
 
-    if (prevMovieComponent === null ) {
+    if (prevMovieComponent === null) {
       render(this.#movieComponent, this.#filmsListContainer);
       return;
     }

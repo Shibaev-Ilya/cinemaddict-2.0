@@ -45,11 +45,17 @@ export default class PopupPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    this.init(data, this.#commentsModel.getComments(data.id));
+    const popup = document.querySelector('.film-details');
+    if (popup !== null) {
+      this.init(data, this.#commentsModel.getComments(data.id));
+    }
   };
 
   #handleCommentModelEvent = (updateType, data) => {
-    this.init(data.movie, this.#commentsModel.getComments(data.movie.id));
+    const popup = document.querySelector('.film-details');
+    if (popup !== null) {
+      this.init(data.movie, this.#commentsModel.getComments(data.movie.id));
+    }
   };
 
   #handleWatchlistClick = () => {

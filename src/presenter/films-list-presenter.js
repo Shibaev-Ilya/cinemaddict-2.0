@@ -67,10 +67,11 @@ export default class FilmsListPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
+    const filmPresenter = this.#filmPresenters.get(data.id);
     switch (updateType) {
       case UpdateType.PATCH:
-        if (this.#filmPresenters.get(data.id) !== undefined) {
-          this.#filmPresenters.get(data.id).init(data, this.#commentsModel.getComments(data.id));
+        if (filmPresenter) {
+          filmPresenter.init(data, this.#commentsModel.getComments(data.id));
         }
         break;
       case UpdateType.MINOR:
