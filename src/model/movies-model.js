@@ -30,6 +30,7 @@ export default class MovieModel extends Observable {
         updatedMovie,
         ...this.#movies.slice(index + 1),
       ];
+      console.log(updatedMovie)
       this._notify(updateType, updatedMovie);
     } catch(err) {
       throw new Error(err);

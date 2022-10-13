@@ -8,6 +8,7 @@ import {UpdateType, UserAction} from '../utils';
 import LoadingView from '../view/loading-view';
 import PopupCommentsListView from '../view/popup-comments-list-view';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import PopupCommentsFormView from '../view/popup-comments-form-view';
 
 const TimeLimit = {
   LOWER_LIMIT: 300,
@@ -23,6 +24,7 @@ export default class PopupPresenter {
   #popupControlsView = null;
   #popupCommentsContainerView = null;
   #popupCommentsListView = null;
+  #popupCommentsFormView = null;
   #movie = null;
   #comments = null;
   #filterModel = null;
@@ -40,26 +42,22 @@ export default class PopupPresenter {
     this.#commentsModel.addObserver(this.#handleCommentModelEvent);
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
-
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this.#movieModel.updateMovie(updateType, update);
+        await this.#movieModel.updateMovie(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this.#uiBlocker.block();
-        this.#movieModel.updateMovie(updateType, update.movie);
-        this.#commentsModel.addComment(updateType, update);
-        this.#uiBlocker.unblock();
+        await this.#commentsModel.addComment(updateType, update);
+        await this.#movieModel.updateMovie(updateType, update.movie);
         break;
       case UserAction.DELETE_COMMENT:
-        this.#uiBlocker.block();
-        this.#movieModel.updateMovie(updateType, update.movie);
-        this.#commentsModel.deleteComment(updateType, update);
-        this.#uiBlocker.unblock();
+        await this.#commentsModel.deleteComment(updateType, update);
+        await this.#movieModel.updateMovie(updateType, update.movie);
         break;
     }
-
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -83,13 +81,20 @@ export default class PopupPresenter {
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
         replace(this.#popupCommentsListView, this.#loadingComponent);
         break;
-      case UpdateType.PATCH:
+      case UpdateType.PATCH: {
         this.#comments = data.newComments ? data.newComments : data.comments;
-        // eslint-disable-next-line no-case-declarations
         const commentsListView = new PopupCommentsListView(this.#comments);
         replace(commentsListView, this.#popupCommentsListView);
         this.#popupCommentsListView = commentsListView;
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
+      }
+      case UpdateType.MINOR: {
+        this.#comments = data.newComments ? data.newComments : data.comments;
+        const commentsListView = new PopupCommentsListView(this.#comments);
+        replace(commentsListView, this.#popupCommentsListView);
+        this.#popupCommentsListView = commentsListView;
+        this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
+      }
         break;
     }
   };
@@ -166,7 +171,7 @@ export default class PopupPresenter {
   #handleAddCommentKeydown = (newComment) => {
     this.#handleViewAction(
       UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {
         newComments: newComment,
         movie: {...this.#movie},
@@ -219,6 +224,7 @@ export default class PopupPresenter {
 
     this.#popupControlsView = new PopupControlsView(this.#movie);
     this.#popupCommentsContainerView = new PopupCommentsContainerView;
+    this.#popupCommentsFormView = new PopupCommentsFormView;
 
     this.#popupMainContainerInner = this.#popupMainContainerView.element.querySelector('.film-details__inner');
     this.#footerContainer = document.querySelector('.footer');
@@ -229,7 +235,7 @@ export default class PopupPresenter {
     this.#popupControlsView.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
     this.#popupControlsView.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
 
-    this.#popupCommentsContainerView.setAddCommentHandlers(this.#handleAddCommentKeydown);
+    this.#popupCommentsFormView.setAddCommentHandlers(this.#handleAddCommentKeydown);
 
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
@@ -240,6 +246,7 @@ export default class PopupPresenter {
       render(this.#popupCommentsContainerView, this.#popupMainContainerInner);
       render(this.#popupControlsView, this.#popupTopContainerView.element);
       render(this.#loadingComponent, this.#popupCommentsContainerView.element.querySelector('.js-comments-list-wrap'), RenderPosition.AFTERBEGIN);
+      render(this.#popupCommentsFormView, this.#popupCommentsContainerView.element.querySelector('.js-comments-list-wrap'));
       return;
     }
 
