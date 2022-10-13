@@ -74,7 +74,7 @@ export default class FilmsListPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         if (filmPresenter) {
-          filmPresenter.init(data, this.#commentsModel.getComments(data.id));
+          filmPresenter.init(data);
         }
         break;
       case UpdateType.MINOR:
@@ -102,7 +102,7 @@ export default class FilmsListPresenter {
     const filmPresenter = new FilmPresenter(this.#filmsListContainer.element, this.#handleViewAction, this.#filterModel, this.#popupPresenter);
     this.#filmPresenters.set(movie.id, filmPresenter);
 
-    filmPresenter.init(movie, this.#commentsModel.getComments(movie.id));
+    filmPresenter.init(movie);
   };
 
   #renderMovies = (movies) => {

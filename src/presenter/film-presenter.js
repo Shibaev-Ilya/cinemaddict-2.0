@@ -6,7 +6,6 @@ import {FilterType} from '../filter';
 
 export default class FilmPresenter {
 
-  #comments = null;
   #filmsListContainer = null;
   #movie = null;
   #movieComponent = null;
@@ -49,12 +48,11 @@ export default class FilmPresenter {
   };
 
   #handlerCardClick = () => {
-    this.#popupPresenter.init(this.#movie, this.#comments);
+    this.#popupPresenter.openNewPopup(this.#movie);
   };
 
-  init = (movie, comments) => {
+  init = (movie) => {
     this.#movie = movie;
-    this.#comments = comments;
 
     const prevMovieComponent = this.#movieComponent;
 

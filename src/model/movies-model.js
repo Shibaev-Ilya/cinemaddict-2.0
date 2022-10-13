@@ -16,15 +16,14 @@ export default class MovieModel extends Observable {
   }
 
   updateMovie = async (updateType, update) => {
-    const commentMovie = update;
-    const index = this.#movies.findIndex((movie) => movie.id === commentMovie.id);
+    const index = this.#movies.findIndex((movie) => movie.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting movie');
     }
 
     try {
-      const response = await this.#movieApiService.updateMovie(commentMovie);
+      const response = await this.#movieApiService.updateMovie(update);
       const updatedMovie = this.#adaptToClient(response);
       this.#movies = [
         ...this.#movies.slice(0, index),

@@ -13,7 +13,8 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT'
+  INIT: 'INIT',
+  COMMENT_INIT: 'COMMENT_INIT'
 };
 
 const SortType = {

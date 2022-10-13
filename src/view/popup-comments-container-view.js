@@ -1,23 +1,4 @@
-import {humanizeDate} from '../utils';
 import AbstractView from '../framework/view/abstract-view';
-import { nanoid } from 'nanoid';
-import he from 'he';
-
-const createCommentsListTemplate = (comments) => comments.reduce((accumulator, comment) => (`${accumulator} <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
-            </span>
-            <div>
-              <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${comment.author}</span>
-                <span class="film-details__comment-day">
-                ${humanizeDate(comment.date, 'YYYY/MM/DD HH:mm')}
-                </span>
-                <button class="film-details__comment-delete js-delete-comment" data-comment-id="${comment.id}">Delete</button>
-              </p>
-            </div>
-          </li>`), '');
 
 const createFormTemplate = () => (`<form class="film-details__new-comment" action="" method="get">
           <div class="film-details__add-emoji-label js-add-emoji"></div>
@@ -49,50 +30,26 @@ const createFormTemplate = () => (`<form class="film-details__new-comment" actio
           </div>
         </form>`);
 
-const createPopupCommentsContainerTemplate = (comments) => (`
+const createPopupCommentsContainerTemplate = () => (`
     <div class="film-details__bottom-container">
-      <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-        <ul class="film-details__comments-list js-comments-list">
-            ${createCommentsListTemplate(comments)}
-        </ul>
+      <section class="film-details__comments-wrap js-comments-list-wrap">
             ${createFormTemplate()}
       </section>
     </div>
 `);
 
 export default class PopupCommentsContainerView extends AbstractView {
-  #comments = null;
   #newComment = null;
   #emojiValue = 'smile';
 
-  constructor(comments) {
-    super();
-    this.#comments = comments;
-  }
-
   get template() {
-    return createPopupCommentsContainerTemplate(this.#comments);
+    return createPopupCommentsContainerTemplate();
   }
 
   setAddCommentHandlers = (callback) => {
     this._callback.addComment = callback;
     this.element.querySelector('.js-emoji-list').addEventListener('click', this.#onEmojiClick);
     this.element.querySelector('.js-add-comment').addEventListener('keydown', this.#onCommentKeydown);
-  };
-
-  setDeleteCommentHandler = (callback) => {
-    this._callback.deleteComment = callback;
-    this.element.querySelector('.js-comments-list').addEventListener('click', this.#onDeleteClick);
-  };
-
-  #onDeleteClick = (evt) => {
-    if (!evt.target.classList.contains('js-delete-comment')) {
-      return;
-    }
-    evt.preventDefault();
-    const commentId = evt.target.dataset.commentId;
-    this._callback.deleteComment(commentId);
   };
 
   #onEmojiClick = (evt) => {
@@ -116,13 +73,19 @@ export default class PopupCommentsContainerView extends AbstractView {
   #onCommentKeydown = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
-      this.#newComment = evt.target.value;
+      this.#newComment = evt.target.value ? evt.target.value : '...';
       const newComment = {
-        'id': nanoid(3),
         'comment': this.#newComment,
         'emotion': this.#emojiValue
       };
       this._callback.addComment(newComment);
+
+      evt.target.value = '';
+      const imgContainer = this.element.querySelector('.js-add-emoji');
+
+      if (imgContainer.hasChildNodes()) {
+        imgContainer.innerHTML = '';
+      }
     }
   };
 

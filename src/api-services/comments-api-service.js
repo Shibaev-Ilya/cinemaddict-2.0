@@ -7,32 +7,24 @@ const Method = {
 };
 
 export default class CommentsApiService extends ApiService {
-  getComments(filmId) {
-    return this._load({url: `comments/${filmId}`})
-      .then(ApiService.parseResponse);
-  }
 
-  addComment = async (filmId, neComment) => {
+  getComments = async (filmId) => this._load({url: `comments/${filmId}`}).then(ApiService.parseResponse);
+
+  addComment = async (filmId, newComment) => {
     const response = await this._load({
       url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(this.#adaptToServer(neComment)),
+      body: JSON.stringify(this.#adaptToServer(newComment)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   };
 
-  deleteComment = async (comment) => {
-    const response = await this._load({
-      url: `comments/${comment}`,
-      method: Method.DELETE,
-    });
-
-    return response;
-  };
+  deleteComment = async (comment) => await this._load({
+    url: `comments/${comment}`,
+    method: Method.DELETE,
+  });
 
   #adaptToServer = (comment) => {
 
