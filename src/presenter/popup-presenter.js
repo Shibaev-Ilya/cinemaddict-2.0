@@ -88,6 +88,7 @@ export default class PopupPresenter {
         this.#popupCommentsListView = commentsListView;
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
       }
+        break;
       case UpdateType.MINOR: {
         this.#comments = data.newComments ? data.newComments : data.comments;
         const commentsListView = new PopupCommentsListView(this.#comments);
