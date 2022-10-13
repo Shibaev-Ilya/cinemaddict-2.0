@@ -10,7 +10,7 @@ import PopupCommentsListView from '../view/popup-comments-list-view';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 const TimeLimit = {
-  LOWER_LIMIT: 0,
+  LOWER_LIMIT: 300,
   UPPER_LIMIT: 1000,
 };
 
@@ -41,25 +41,29 @@ export default class PopupPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
         this.#movieModel.updateMovie(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this.#uiBlocker.block();
         this.#movieModel.updateMovie(updateType, update.movie);
         this.#commentsModel.addComment(updateType, update);
+        this.#uiBlocker.unblock();
         break;
       case UserAction.DELETE_COMMENT:
+        this.#uiBlocker.block();
         this.#movieModel.updateMovie(updateType, update.movie);
         this.#commentsModel.deleteComment(updateType, update);
+        this.#uiBlocker.unblock();
         break;
     }
-    this.#uiBlocker.unblock();
+
   };
 
   #handleModelEvent = (updateType, data) => {
-
+    this.#isRendered = true;
     switch (updateType) {
       case UpdateType.PATCH:
         this.init(data);
@@ -68,7 +72,7 @@ export default class PopupPresenter {
         this.init(data);
         break;
     }
-
+    this.#isRendered = false;
   };
 
   #handleCommentModelEvent = (updateType, data) => {

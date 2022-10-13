@@ -11,7 +11,12 @@ import {sortDateUp, SortType, sortRatingUp, UpdateType, UserAction} from '../uti
 import {filter} from '../filter';
 import PopupPresenter from './popup-presenter';
 import LoadingView from '../view/loading-view';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 300,
+  UPPER_LIMIT: 1000,
+};
 const MOVIES_PER_PAGE = 5;
 
 export default class FilmsListPresenter {
@@ -33,6 +38,7 @@ export default class FilmsListPresenter {
   #filmPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor (mainContainer, movieModel, commentsModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -62,11 +68,13 @@ export default class FilmsListPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
         this.#movieModel.updateMovie(updateType, update);
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
