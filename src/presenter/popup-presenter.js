@@ -7,6 +7,12 @@ import {FilterType} from '../filter';
 import {UpdateType, UserAction} from '../utils';
 import LoadingView from '../view/loading-view';
 import PopupCommentsListView from '../view/popup-comments-list-view';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 0,
+  UPPER_LIMIT: 1000,
+};
 
 export default class PopupPresenter {
   #loadingComponent = new LoadingView();
@@ -23,6 +29,7 @@ export default class PopupPresenter {
   #movieModel = null;
   #commentsModel = null;
   #isRendered = false;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(movieModel, commentsModel, filterModel) {
     this.#movieModel = movieModel;
@@ -34,6 +41,7 @@ export default class PopupPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
         this.#movieModel.updateMovie(updateType, update);
@@ -47,6 +55,7 @@ export default class PopupPresenter {
         this.#commentsModel.deleteComment(updateType, update);
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -165,6 +174,7 @@ export default class PopupPresenter {
     const popup = document.querySelector('.film-details');
     if (popup !== null) {
       popup.remove();
+      this.#isRendered = false;
     }
   };
 
@@ -188,7 +198,9 @@ export default class PopupPresenter {
   };
 
   openNewPopup = (movie) => {
-    this.#closeOpenedPopup();
+    if (this.#isRendered) {
+      this.#closeOpenedPopup();
+    }
     this.init(movie);
     this.#commentsModel.init(this.#movie.id);
     this.#isRendered = true;
