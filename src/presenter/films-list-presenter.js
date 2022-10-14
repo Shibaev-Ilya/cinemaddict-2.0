@@ -67,11 +67,15 @@ export default class FilmsListPresenter {
     }
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this.#movieModel.updateMovie(updateType, update);
+        try {
+          await this.#movieModel.updateMovie(updateType, update);
+        } catch (err) {
+          this.#filmPresenters.get(update.id).shakeButtons();
+        }
         break;
     }
     this.#uiBlocker.unblock();

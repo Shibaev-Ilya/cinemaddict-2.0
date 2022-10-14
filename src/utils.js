@@ -29,6 +29,25 @@ const SortTypeNames = {
   [SortType.BY_RATING] : 'Sort by rating',
 };
 
+const ProfileRank = {
+  NO_RANK: {
+    TEXT: '',
+    MAX_LENGTH: 0,
+  },
+  NOVICE: {
+    TEXT: 'Novice',
+    MAX_LENGTH: 10,
+  },
+  FAN: {
+    TEXT: 'Fan',
+    MAX_LENGTH: 20,
+  },
+  MOVIE_BUFF: {
+    TEXT: 'Movie Buff',
+    MAX_LENGTH: Infinity,
+  }
+};
+
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
@@ -85,4 +104,4 @@ const sortRatingUp = (movieA, movieB) => {
   return 0;
 };
 
-export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, SortType, sortDateUp, sortRatingUp, SortTypeNames, UpdateType, UserAction};
+export {getRandomInteger, humanizeDate, getId, FILM_AMOUNT, minutesToHours, SortType, sortDateUp, sortRatingUp, SortTypeNames, UpdateType, UserAction, ProfileRank};

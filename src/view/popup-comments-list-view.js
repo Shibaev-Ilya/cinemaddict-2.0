@@ -29,6 +29,7 @@ const createPopupCommentsContainerTemplate = (comments) => (`
 
 export default class PopupCommentsListView extends AbstractView {
   #comments = null;
+  #deletingCommentButton = null;
 
   constructor(comments) {
     super();
@@ -50,7 +51,13 @@ export default class PopupCommentsListView extends AbstractView {
     }
     evt.preventDefault();
     const commentId = evt.target.dataset.commentId;
+    evt.target.textContent = 'Deleting...';
+    this.#deletingCommentButton = evt.target;
     this._callback.deleteComment(commentId);
+  };
+
+  changeButtonText = () => {
+    this.#deletingCommentButton.textContent = 'Delete';
   };
 
 }

@@ -1,12 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-const createFormTemplate = (data) => {
-  const {isDisabled} = data;
-  return (`<form class="film-details__new-comment" action="" method="get">
+const createFormTemplate = () => (`<form class="film-details__new-comment" action="" method="get">
           <div class="film-details__add-emoji-label js-add-emoji"></div>
 
           <label class="film-details__comment-label js-add-comment">
-            <textarea class="film-details__comment-input js-textarea" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}></textarea>
+            <textarea class="film-details__comment-input js-textarea" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
           <div class="film-details__emoji-list js-emoji-list">
@@ -31,16 +29,13 @@ const createFormTemplate = (data) => {
             </label>
           </div>
         </form>`);
-};
-
 
 export default class PopupCommentsFormView extends AbstractStatefulView {
   #newComment = null;
   #emojiValue = 'smile';
-  _state = {isDisabled: false};
 
   get template() {
-    return createFormTemplate(this._state);
+    return createFormTemplate();
   }
 
   setAddCommentHandlers = (callback) => {
