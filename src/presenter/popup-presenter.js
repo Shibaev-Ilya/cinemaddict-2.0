@@ -46,15 +46,27 @@ export default class PopupPresenter {
     this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        await this.#movieModel.updateMovie(updateType, update);
+        try {
+          await this.#movieModel.updateMovie(updateType, update);
+        } catch (err) {
+          this.#popupControlsView.shake();
+        }
         break;
       case UserAction.ADD_COMMENT:
-        await this.#commentsModel.addComment(updateType, update);
-        await this.#movieModel.updateMovie(updateType, update.movie);
+        try {
+          await this.#commentsModel.addComment(updateType, update);
+          await this.#movieModel.updateMovie(updateType, update.movie);
+        } catch (err) {
+          this.#popupCommentsFormView.shake();
+        }
         break;
       case UserAction.DELETE_COMMENT:
-        await this.#commentsModel.deleteComment(updateType, update);
-        await this.#movieModel.updateMovie(updateType, update.movie);
+        try {
+          await this.#commentsModel.deleteComment(updateType, update);
+          await this.#movieModel.updateMovie(updateType, update.movie);
+        } catch (err) {
+          this.#popupCommentsListView.shake();
+        }
         break;
     }
     this.#uiBlocker.unblock();
@@ -82,7 +94,7 @@ export default class PopupPresenter {
         replace(this.#popupCommentsListView, this.#loadingComponent);
         break;
       case UpdateType.PATCH:
-      case UpdateType.MINOR:{
+      case UpdateType.MINOR: {
         this.#comments = data.newComments ? data.newComments : data.comments;
         const commentsListView = new PopupCommentsListView(this.#comments);
         replace(commentsListView, this.#popupCommentsListView);
@@ -217,7 +229,6 @@ export default class PopupPresenter {
 
     this.#popupControlsView = new PopupControlsView(this.#movie);
     this.#popupCommentsContainerView = new PopupCommentsContainerView;
-    this.#popupCommentsFormView = new PopupCommentsFormView;
 
     this.#popupMainContainerInner = this.#popupMainContainerView.element.querySelector('.film-details__inner');
     this.#footerContainer = document.querySelector('.footer');
@@ -228,12 +239,13 @@ export default class PopupPresenter {
     this.#popupControlsView.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
     this.#popupControlsView.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
 
-    this.#popupCommentsFormView.setAddCommentHandlers(this.#handleAddCommentKeydown);
-
     document.addEventListener('keydown', this.#onDocumentKeydown);
     document.body.classList.add('hide-overflow');
 
     if (!this.#isRendered) {
+      this.#popupCommentsFormView = new PopupCommentsFormView;
+      this.#popupCommentsFormView.setAddCommentHandlers(this.#handleAddCommentKeydown);
+
       render(this.#popupMainContainerView, this.#footerContainer, RenderPosition.AFTEREND);
       render(this.#popupTopContainerView, this.#popupMainContainerInner);
       render(this.#popupCommentsContainerView, this.#popupMainContainerInner);

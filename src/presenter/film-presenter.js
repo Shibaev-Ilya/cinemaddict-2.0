@@ -20,6 +20,10 @@ export default class FilmPresenter {
     this.#popupPresenter = popupPresenter;
   }
 
+  shakeButtons = () => {
+    this.#movieComponent.shake();
+  };
+
   #handleFilmWatchlistClick = () => {
     this.#changeData(
       UserAction.UPDATE_MOVIE,
