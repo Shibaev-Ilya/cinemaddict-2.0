@@ -81,18 +81,12 @@ export default class PopupPresenter {
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
         replace(this.#popupCommentsListView, this.#loadingComponent);
         break;
-      case UpdateType.PATCH: {
+      case UpdateType.PATCH:
+      case UpdateType.MINOR:{
         this.#comments = data.newComments ? data.newComments : data.comments;
         const commentsListView = new PopupCommentsListView(this.#comments);
         replace(commentsListView, this.#popupCommentsListView);
-        this.#popupCommentsListView = commentsListView;
-        this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
-      }
-        break;
-      case UpdateType.MINOR: {
-        this.#comments = data.newComments ? data.newComments : data.comments;
-        const commentsListView = new PopupCommentsListView(this.#comments);
-        replace(commentsListView, this.#popupCommentsListView);
+        this.#popupCommentsFormView.clearForm();
         this.#popupCommentsListView = commentsListView;
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
       }

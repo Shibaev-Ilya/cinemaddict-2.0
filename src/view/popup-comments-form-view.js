@@ -6,7 +6,7 @@ const createFormTemplate = (data) => {
           <div class="film-details__add-emoji-label js-add-emoji"></div>
 
           <label class="film-details__comment-label js-add-comment">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}></textarea>
+            <textarea class="film-details__comment-input js-textarea" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}></textarea>
           </label>
 
           <div class="film-details__emoji-list js-emoji-list">
@@ -77,12 +77,15 @@ export default class PopupCommentsFormView extends AbstractStatefulView {
       };
       this._callback.addComment(newComment);
 
-      evt.target.value = '';
-      const imgContainer = this.element.querySelector('.js-add-emoji');
+    }
+  };
 
-      if (imgContainer.hasChildNodes()) {
-        imgContainer.innerHTML = '';
-      }
+  clearForm = () => {
+    document.querySelector('.js-textarea').value = '';
+    const imgContainer = document.querySelector('.js-add-emoji');
+
+    if (imgContainer.hasChildNodes()) {
+      imgContainer.innerHTML = '';
     }
   };
 
