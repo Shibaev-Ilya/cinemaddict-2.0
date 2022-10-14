@@ -66,6 +66,7 @@ export default class PopupPresenter {
           await this.#movieModel.updateMovie(updateType, update.movie);
         } catch (err) {
           this.#popupCommentsListView.shake();
+          this.#popupCommentsListView.changeButtonText();
         }
         break;
     }
