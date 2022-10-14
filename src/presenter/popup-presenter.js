@@ -193,7 +193,6 @@ export default class PopupPresenter {
     this.#closeOpenedPopup();
     this.#popupMainContainerView.element.remove();
     document.body.classList.remove('hide-overflow');
-    this.#isRendered = false;
   };
 
   #onButtonCloseClick = () => {
@@ -208,9 +207,8 @@ export default class PopupPresenter {
   };
 
   openNewPopup = (movie) => {
-    if (this.#isRendered) {
-      this.#closeOpenedPopup();
-    }
+    this.#closeOpenedPopup();
+
     this.init(movie);
     this.#commentsModel.init(this.#movie.id);
     this.#isRendered = true;
