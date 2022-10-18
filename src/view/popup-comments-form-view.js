@@ -1,10 +1,17 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-const createFormTemplate = () => (`<form class="film-details__new-comment" action="" method="get">
-          <div class="film-details__add-emoji-label js-add-emoji"></div>
+const createFormTemplate = (state) => {
+  const {isDisabled, emotion, comment} = state;
+  let emojiImage = '';
+  if (emotion) {
+    emojiImage = `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji">`;
+  }
+  return (`<form class="film-details__new-comment" action="" method="get">
+          <div class="film-details__add-emoji-label js-add-emoji">${emojiImage}</div>
 
           <label class="film-details__comment-label js-add-comment">
-            <textarea class="film-details__comment-input js-textarea" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input js-textarea" placeholder="Select reaction below and write comment here" name="comment"
+            ${isDisabled ? 'disabled' : ''}>${comment ? comment : ''}</textarea>
           </label>
 
           <div class="film-details__emoji-list js-emoji-list">
@@ -29,13 +36,17 @@ const createFormTemplate = () => (`<form class="film-details__new-comment" actio
             </label>
           </div>
         </form>`);
+};
 
 export default class PopupCommentsFormView extends AbstractStatefulView {
-  #newComment = null;
-  #emojiValue = 'smile';
+  _state = {
+    isDisabled: false,
+    'comment': null,
+    'emotion': null
+  };
 
   get template() {
-    return createFormTemplate();
+    return createFormTemplate(this._state);
   }
 
   setAddCommentHandlers = (callback) => {
@@ -45,38 +56,57 @@ export default class PopupCommentsFormView extends AbstractStatefulView {
   };
 
   #onEmojiClick = (evt) => {
-    if (evt.target.tagName !== 'IMG') {
+    if (evt.target.tagName !== 'IMG' || this._state.isDisabled) {
       return;
     }
 
     const imgContainer = this.element.querySelector('.js-add-emoji');
+    const emoji = evt.target.cloneNode(true);
 
     if (imgContainer.hasChildNodes()) {
       imgContainer.innerHTML = '';
     }
+    emoji.width = 55;
+    emoji.height = 55;
 
-    imgContainer.append(evt.target.cloneNode(true));
+    if (imgContainer.classList.contains('error')) {
+      imgContainer.classList.remove('error');
+    }
+
+    imgContainer.append(emoji);
 
     const inputId = evt.target.parentElement.getAttribute('for');
-    this.#emojiValue = this.element.querySelector(`#${inputId}`).value;
+    this._state.emotion = this.element.querySelector(`#${inputId}`).value;
 
   };
 
   #onCommentKeydown = (evt) => {
-    if (evt.ctrlKey && evt.key === 'Enter') {
-      evt.preventDefault();
-      this.#newComment = evt.target.value ? evt.target.value : '...';
-      const newComment = {
-        'comment': this.#newComment,
-        'emotion': this.#emojiValue
-      };
-      this._callback.addComment(newComment);
 
+    if ((evt.ctrlKey && evt.key === 'Enter') || (evt.metaKey && evt.key === 'Enter')) {
+      evt.preventDefault();
+      if (this._state.emotion) {
+        if (evt.target.value) {
+          this._state.comment = evt.target.value;
+        } else {
+          evt.target.classList.add('error');
+        }
+
+        const newComment = {
+          'comment': this._state.comment,
+          'emotion': this._state.emotion
+        };
+        this._callback.addComment(newComment);
+        return;
+      }
+
+      const imgContainer = this.element.querySelector('.js-add-emoji');
+      imgContainer.classList.add('error');
     }
   };
 
   clearForm = () => {
     document.querySelector('.js-textarea').value = '';
+    //this.#emojiValue = null;
     const imgContainer = document.querySelector('.js-add-emoji');
 
     if (imgContainer.hasChildNodes()) {

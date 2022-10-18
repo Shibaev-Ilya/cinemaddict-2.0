@@ -3,6 +3,7 @@ import {humanizeDate, minutesToHours} from '../utils';
 
 const createPopupTopContainerTemplate = (movie) => {
   const {id, filmInfo} = movie;
+  const isGenres = filmInfo.genre.length > 1 ;
   const getGenresTemplate = () => filmInfo.genre.map( (genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
   return (`
@@ -55,7 +56,7 @@ const createPopupTopContainerTemplate = (movie) => {
               <td class="film-details__cell">${filmInfo.release.releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${isGenres ? 'Genres' : 'Genre'}</td>
               <td class="film-details__cell">
                 ${getGenresTemplate()}
               </td>
