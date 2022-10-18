@@ -88,7 +88,8 @@ export default class PopupCommentsFormView extends AbstractStatefulView {
         if (evt.target.value) {
           this._state.comment = evt.target.value;
         } else {
-          evt.target.classList.add('error');
+          this.shake();
+          return;
         }
 
         const newComment = {
