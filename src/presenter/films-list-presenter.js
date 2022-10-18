@@ -143,13 +143,15 @@ export default class FilmsListPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearBoard();
+    this.#clearBoard({resetRenderedMoviesCount: true});
     this.#renderBoard();
   };
 
   #renderSort = () => {
     this.#sortPresenter = new SortPresenter(this.#mainContainer, this.#handleSortTypeChange);
-    this.#sortPresenter.init(this.movies, this.#currentSortType);
+    if (this.movies.length > 0) {
+      this.#sortPresenter.init(this.movies, this.#currentSortType);
+    }
   };
 
   #renderFilters = () => {

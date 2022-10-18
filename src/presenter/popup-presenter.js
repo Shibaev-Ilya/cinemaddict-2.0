@@ -11,8 +11,8 @@ import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PopupCommentsFormView from '../view/popup-comments-form-view';
 
 const TimeLimit = {
-  LOWER_LIMIT: 300,
-  UPPER_LIMIT: 1000,
+  LOWER_LIMIT: 0,
+  UPPER_LIMIT: 0,
 };
 
 export default class PopupPresenter {
@@ -54,9 +54,11 @@ export default class PopupPresenter {
         break;
       case UserAction.ADD_COMMENT:
         try {
+          this.#popupCommentsFormView.updateElement({isDisabled: true, 'comment': update.newComments.comment, 'emotion': update.newComments.emotion});
           await this.#commentsModel.addComment(updateType, update);
           await this.#movieModel.updateMovie(updateType, update.movie);
         } catch (err) {
+          this.#popupCommentsFormView.updateElement({isDisabled: false, 'comment': update.newComments.comment, 'emotion': update.newComments.emotion});
           this.#popupCommentsFormView.shake();
         }
         break;
@@ -99,7 +101,7 @@ export default class PopupPresenter {
         this.#comments = data.newComments ? data.newComments : data.comments;
         const commentsListView = new PopupCommentsListView(this.#comments);
         replace(commentsListView, this.#popupCommentsListView);
-        this.#popupCommentsFormView.clearForm();
+        this.#popupCommentsFormView.updateElement({isDisabled: false, 'comment': null, 'emotion': null});
         this.#popupCommentsListView = commentsListView;
         this.#popupCommentsListView.setDeleteCommentHandler(this.#handleDeleteClick);
       }
@@ -219,11 +221,14 @@ export default class PopupPresenter {
     this.init(movie);
     this.#commentsModel.init(this.#movie.id);
     this.#isRendered = true;
+    document.addEventListener('keydown', this.#onDocumentKeydown);
+    document.body.classList.add('hide-overflow');
   };
 
   init = (movie) => {
     this.#movie = movie;
     const prevPopupControlsView = this.#popupControlsView;
+    const prevPopupCommentsFormView = this.#popupCommentsFormView;
 
     this.#popupMainContainerView = new PopupMainContainerView;
     this.#popupTopContainerView = new PopupTopContainerView(this.#movie);
@@ -240,9 +245,6 @@ export default class PopupPresenter {
     this.#popupControlsView.setClickAlreadyWatchedHandler(this.#handleAlreadyWatchedClick);
     this.#popupControlsView.setClickFavoriteHandler(this.#handleFavoriteWatchedClick);
 
-    document.addEventListener('keydown', this.#onDocumentKeydown);
-    document.body.classList.add('hide-overflow');
-
     if (!this.#isRendered) {
       this.#popupCommentsFormView = new PopupCommentsFormView;
       this.#popupCommentsFormView.setAddCommentHandlers(this.#handleAddCommentKeydown);
@@ -258,6 +260,9 @@ export default class PopupPresenter {
 
     if (prevPopupControlsView && this.#isRendered) {
       replace(this.#popupControlsView, prevPopupControlsView);
+    }
+    if (prevPopupCommentsFormView && this.#isRendered) {
+      this.#popupCommentsFormView.updateElement({isDisabled: false});
     }
 
   };
